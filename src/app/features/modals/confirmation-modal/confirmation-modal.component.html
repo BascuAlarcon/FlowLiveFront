@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <div> 
+        <div class="icon-container" *ngIf="data.icon">
+            <img 
+            *ngIf="data.icon === 'warning'" 
+            src="assets/img/icon-alert-yellow.svg" 
+            alt="Warning"
+            class="modal-icon">
+        </div> 
+        <h2 mat-dialog-title>{{ data.title }}</h2> 
+    </div>
+    <button (click)="onClose()"> 
+        <img src="assets/img/icon-cerrar-black.svg" alt="Cerrar"> 
+    </button>
+</div> 
+
+<div mat-dialog-content class="modal-body"> 
+    <div class="modal-message">
+        <p>{{ data.message }}</p>
+        <p *ngIf="data.subMessage" class="sub-message">{{ data.subMessage }}</p>
+    </div>
+</div>
+
+<div mat-dialog-actions class="modal-footer">
+    <button 
+        type="button" 
+        class="btn btn-cancel" 
+        (click)="onCancel()">
+        {{ data.cancelText }}
+    </button>
+    <button 
+        type="button" 
+        class="btn {{ data.confirmButtonClass }}" 
+        (click)="onConfirm()">
+        {{ data.confirmText }}
+    </button>
+</div> 

@@ -1,0 +1,10 @@
+// src/app/features/customers/customers.routes.ts
+
+import { Routes } from '@angular/router';
+
+export const CUSTOMERS_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./customer-list.component').then(m => m.CustomerListComponent)
+  }
+];

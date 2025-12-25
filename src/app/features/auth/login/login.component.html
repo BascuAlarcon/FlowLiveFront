@@ -1,0 +1,74 @@
+<div class="login-container">
+  <div class="login-card card">
+    <div class="login-header">
+      <h1>FlowLive</h1>
+      <p>Plataforma de Live Commerce</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          placeholder="tu@email.com"
+          [class.error]="email?.invalid && email?.touched"
+        />
+        @if (email?.invalid && email?.touched) {
+          <div class="form-error">
+            @if (email?.errors?.['required']) {
+              El email es requerido
+            }
+            @if (email?.errors?.['email']) {
+              Email inválido
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          placeholder="••••••••"
+          [class.error]="password?.invalid && password?.touched"
+        />
+        @if (password?.invalid && password?.touched) {
+          <div class="form-error">
+            @if (password?.errors?.['required']) {
+              La contraseña es requerida
+            }
+            @if (password?.errors?.['minlength']) {
+              Mínimo 6 caracteres
+            }
+          </div>
+        }
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-lg btn-block"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="spinner"></span>
+          <span>Iniciando sesión...</span>
+        } @else {
+          <span>Iniciar Sesión</span>
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>
+        ¿No tienes cuenta? 
+        <a routerLink="/auth/register">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>

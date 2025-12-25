@@ -1,0 +1,100 @@
+<div class="modal-header">
+  <h2 mat-dialog-title>Selector de rango de fechas</h2>
+  <button (click)="onCancelar()" class="btn-close">
+    <img src="assets/img/icon-cerrar-black.svg" alt="Cerrar">
+  </button>
+</div>
+
+<div mat-dialog-content class="modal-body">
+  <div class="selector-container">
+    <!-- Selector rápido -->
+    <div class="selector-rapido">
+      <h3>Selector rápido</h3>
+      <div class="opciones-rapidas">
+        <button 
+          type="button"
+          class="opcion-btn" 
+          [class.active]="selectorRapido === 'personalizar'"
+          (click)="aplicarSelectorRapido('personalizar')">
+          Personalizar
+        </button>
+        <button 
+          type="button"
+          class="opcion-btn" 
+          [class.active]="selectorRapido === 'mes-actual'"
+          (click)="aplicarSelectorRapido('mes-actual')">
+          Mes actual
+        </button>
+        <button 
+          type="button"
+          class="opcion-btn" 
+          [class.active]="selectorRapido === 'ultimos-2-meses'"
+          (click)="aplicarSelectorRapido('ultimos-2-meses')">
+          Los últimos 2 meses
+        </button>
+        <button 
+          type="button"
+          class="opcion-btn" 
+          [class.active]="selectorRapido === 'ultimos-3-meses'"
+          (click)="aplicarSelectorRapido('ultimos-3-meses')">
+          Los últimos 3 meses
+        </button>
+        <button 
+          type="button"
+          class="opcion-btn" 
+          [class.active]="selectorRapido === 'año-actual'"
+          (click)="aplicarSelectorRapido('año-actual')">
+          Año actual (de enero hasta hoy)
+        </button>
+      </div>
+    </div>
+
+    <!-- Calendario -->
+    <div class="calendario-container">
+      <!-- Campos de fecha -->
+      <div class="fecha-inputs">
+        <div class="input-group">
+          <label>Mes inicio</label>
+          <input type="text" [(ngModel)]="mesInicio" class="form-control" placeholder="Enero/2024">
+        </div>
+        <div class="input-group">
+          <label>Mes final</label>
+          <input type="text" [(ngModel)]="mesFinal" class="form-control" placeholder="Enero/2024">
+        </div>
+      </div>
+
+      <!-- Selector de año -->
+      <div class="year-selector">
+        <button type="button" (click)="anteriorYear()" class="year-btn">
+          <span>&lt;</span>
+        </button>
+        <span class="year-display">{{ yearActual }}</span>
+        <button type="button" (click)="siguienteYear()" class="year-btn">
+          <span>&gt;</span>
+        </button>
+      </div>
+
+      <!-- Grid de meses -->
+      <div class="meses-grid">
+        <button 
+          type="button"
+          *ngFor="let mes of meses" 
+          class="mes-btn"
+          [class.selected-inicio]="isMesSeleccionado(mes, 'inicio')"
+          [class.selected-final]="isMesSeleccionado(mes, 'final')"
+          (click)="seleccionarMes(mes, mesInicioSeleccionado ? 'final' : 'inicio')">
+          {{ mes }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions class="modal-footer">
+  <button type="button" class="btn btn-cancel" (click)="onCancelar()">
+    Cancelar
+  </button>
+  <button type="button" class="btn btn-primary" (click)="onAplicar()">
+    Aplicar
+  </button>
+</div>

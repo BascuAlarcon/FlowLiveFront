@@ -1,0 +1,7 @@
+<div class="avatar" [style.backgroundImage]="imgUrl ? 'url(' + imgUrl + ')' : ''" 
+     [style.backgroundColor]="!imgUrl ? (useRandomColor ? getRandomColor() : defaultColor) : ''" 
+     [style.width.px]="size" [style.height.px]="size" 
+     [style.fontSize.px]="size * 0.4">
+  <!-- <span *ngIf="!imgUrl">{{ getInitials() }}</span> -->
+  <span *ngIf="!imgUrl">U1</span>
+</div> 

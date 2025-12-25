@@ -1,0 +1,124 @@
+<div class="container" style="max-width: 90%;">  
+  <div class="container mt-4" style="max-width: 100%;">
+    <div class="row mb-2">
+      <div class="col-12 col-md-10">
+        <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+        <h1 class="mb-1 page-title">Procesos de Selección e Ingreso de Personas</h1>
+        <p class="mb-4 subtitle">Monitorea en un solo lugar los procesos de selección e ingreso para tomar decisiones estratégicas y optimizar la gestión de personas.</p>
+      </div> 
+    </div>
+  </div>
+ 
+  <div class="container" style="max-width: 90%;"> 
+      <div class="">
+        <div class="row" style="align-items: center;">
+
+          <div class="col-12 col-md-6"> 
+            <div style="display: flex !important; flex-direction: row; padding-left: 0px; margin-bottom: 0;">
+              <button class="tab-button" [class.active]="activeTab === 'generales'" (click)="setActiveTab('generales')">Generales</button>
+              <button class="tab-button" [class.active]="activeTab === 'seleccion'" (click)="setActiveTab('seleccion')">Selección</button>
+              <button class="tab-button" [class.active]="activeTab === 'ingreso'" (click)="setActiveTab('ingreso')">Ingreso</button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6" style="text-align: end;">
+            <div class="row" style="justify-content: end;">
+              <div class="col-12 col-md-3" style="width: 20%">
+                <button class="btn btn-outline-primary d-flex align-items-center justify-content-center" 
+                        style="gap: 10px; padding: 0; height: 40px; border-radius: 20px; border: 1px solid #0066FF; color: #0066FF; background-color: white; font-weight: 500;">
+                  <img src="assets/img/icon-download-blue.svg" alt="">
+                  PDF
+                </button>
+              </div>
+              <div class="col-12 col-md-3" style="width: 20%">  
+                <div (click)="toggleFilters()" class="card filter-card" 
+                style="display: flex; padding: 7px !important; ; cursor: pointer; background-color: #F8F9FB;">
+                  <label for="" style="cursor: pointer; align-self: start;">
+                    <img src="assets/img/icon-filtrar.svg" alt="" style="height: 24px;width: 24px;margin-right: 10px;">
+                    Filtrar</label>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+          <ng-container *ngTemplateOutlet="filtrosTemplate"></ng-container>
+          
+
+          <div class="tab-content" *ngIf="activeTab === 'generales'">  
+              <app-home-procesos-seleccion-tab-generales></app-home-procesos-seleccion-tab-generales>
+          </div>
+          
+          <div class="tab-content" *ngIf="activeTab === 'seleccion'">  
+              <app-home-procesos-seleccion-tab-seleccion></app-home-procesos-seleccion-tab-seleccion>
+          </div>
+          
+          <div class="tab-content" *ngIf="activeTab === 'ingreso'">  
+              <app-home-procesos-seleccion-tab-ingreso></app-home-procesos-seleccion-tab-ingreso>
+          </div>
+      </div> 
+  </div>
+
+</div>
+
+<ng-template #filtrosTemplate>
+    <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-12 col-md-8"> 
+      <div class="row"> 
+        <div class="col-12 col-md-3 mb-2 mb-md-0">   
+          <div class="search-input-container">
+            <input class="form-control input-field search-input" type="text" placeholder="Buscar por Cargo" />  
+            <img src="assets/img/icon-lupa.svg" alt="" class="search-icon">
+          </div>
+        </div>  
+        <div class="col-6 col-md-3 mb-2 mb-md-0">
+          <select class="form-select input-field">
+            <option>Seleccione Empresa</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3 mb-2 mb-md-0">
+          <select style="height: 40px;" class="form-select">
+            <option>Tipo Proceso</option>
+          </select>
+        </div>
+        <div *ngIf="activeTab != 'generales'" class="col-6 col-md-3 mb-2 mb-md-0">
+          <select style="height: 40px;" class="form-select">
+            <option>Estado</option>
+          </select>
+        </div>
+      </div>
+    </div> 
+  </div> 
+
+  <!-- Filtros "expandibles" -->
+  <div class="card" style="padding: 0;" *ngIf="showFilters"> 
+    <div class="row" style="margin: 0;padding: 1em;align-items: anchor-center;">
+      <div class="col-12 col-md-3 mb-2 mb-md-0">   
+        <select style="height: 40px;" class="form-select">
+          <option>Gerencia</option>
+        </select>
+      </div> 
+      <div class="col-6 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Zona</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Oficina</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Género</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Rango etario</option>
+        </select>
+      </div>
+    </div> 
+  </div>
+</ng-template>

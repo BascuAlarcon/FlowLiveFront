@@ -1,0 +1,226 @@
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #E5E7EB;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.selector-container {
+  display: flex;
+  gap: 24px;
+}
+
+.selector-rapido {
+  flex: 0 0 220px;
+  border-right: 1px solid #E5E7EB;
+  padding-right: 24px;
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 16px 0;
+  }
+
+  .opciones-rapidas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .opcion-btn {
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #F9FAFB;
+      border-color: #9CA3AF;
+    }
+
+    &.active {
+      background: #EEF2FF;
+      border-color: #6366F1;
+      color: #4F46E5;
+      font-weight: 500;
+    }
+  }
+}
+
+.calendario-container {
+  flex: 1;
+}
+
+.fecha-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  .input-group {
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #111827;
+
+      &:focus {
+        outline: none;
+        border-color: #6366F1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+    }
+  }
+}
+
+.year-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+
+  .year-btn {
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #374151;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #F9FAFB;
+      border-color: #9CA3AF;
+    }
+  }
+
+  .year-display {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    min-width: 60px;
+    text-align: center;
+  }
+}
+
+.meses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  .mes-btn {
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #F9FAFB;
+      border-color: #9CA3AF;
+    }
+
+    &.selected-inicio {
+      background: #DBEAFE;
+      border-color: #3B82F6;
+      color: #1E40AF;
+      font-weight: 500;
+    }
+
+    &.selected-final {
+      background: #FEE2E2;
+      border-color: #EF4444;
+      color: #991B1B;
+      font-weight: 500;
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #E5E7EB;
+
+  .btn {
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+
+    &.btn-cancel {
+      background: #FFFFFF;
+      border: 1px solid #D1D5DB;
+      color: #374151;
+
+      &:hover {
+        background: #F9FAFB;
+      }
+    }
+
+    &.btn-primary {
+      background: #6366F1;
+      color: #FFFFFF;
+
+      &:hover {
+        background: #4F46E5;
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+<div
+  class="cc-sidebar-container pt-1"
+  [style.width.px]="sidebarWidth"
+  (mouseenter)="expandSidebar()"
+  (mouseleave)="collapseSidebar()"
+>
+  <nav class="nav flex-column">  
+    <div class="row">
+      <div class="col-12">
+ 
+        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+          <button
+            type="button"
+            class="cc-btn-sidebar"
+            routerLink="/affiliatons"
+            (click)="selectOptionSidebar('HomeProcesosSeleccion')"
+            (mouseenter)="setHover('HomeProcesosSeleccion', true)"
+            (mouseleave)="setHover('HomeProcesosSeleccion', false)"
+            [ngClass]="{ selected: isActive('HomeProcesosSeleccion') && !sidebarComprimido }"
+          >
+            <img 
+              height="40px" width="40px"
+              src="/assets/img/icon-sidebar-home{{ (isActive('HomeProcesosSeleccion') || isHover('HomeProcesosSeleccion')) ? '-active' : '' }}.svg"
+              [ngClass]="{ selected: isActive('HomeProcesosSeleccion') && sidebarComprimido }"
+            />
+            Inicio (métricas)
+          </button>
+        </div>
+
+
+        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+          <button
+            type="button"
+            class="cc-btn-sidebar"
+            routerLink="/affiliatons"
+            (click)="selectOptionSidebar(getProcesosSeleccionKey())"
+            (mouseenter)="setHover(getProcesosSeleccionKey(), true)"
+            (mouseleave)="setHover(getProcesosSeleccionKey(), false)"
+            [ngClass]="{ selected: isActive(getProcesosSeleccionKey()) && !sidebarComprimido }"
+          >
+            <img 
+              height="40px" width="40px"
+              [src]="getProcesosSeleccionIcon(isActive(getProcesosSeleccionKey()) || isHover(getProcesosSeleccionKey()))"
+              [ngClass]="{ selected: isActive(getProcesosSeleccionKey()) && sidebarComprimido }"
+            />
+            Live
+          </button>
+          
+        </div> 
+
+        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+          <button
+            type="button"
+            class="cc-btn-sidebar"
+            routerLink="/affiliatons"
+            (click)="selectOptionSidebar('SolicitudesIngreso')"
+            (mouseenter)="setHover('SolicitudesIngreso', true)"
+            (mouseleave)="setHover('SolicitudesIngreso', false)"
+            [ngClass]="{ selected: isActive('SolicitudesIngreso') && !sidebarComprimido }"
+          >
+            <img 
+              height="40px" width="40px"
+              src="/assets/img/icon-persona-plus{{ (isActive('SolicitudesIngreso') || isHover('SolicitudesIngreso')) ? '-active' : '' }}.svg"
+              [ngClass]="{ selected: isActive('SolicitudesIngreso') && sidebarComprimido }"
+            />
+            Administración de Usuarios
+          </button>
+        </div> 
+        
+      </div>
+    </div> 
+  </nav>
+</div>

@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <div>
+    <h2 mat-dialog-title style="font-size: 18px !important;">Notificaciones</h2>
+  </div>
+  <button (click)="onClose()">
+    <span>Cerrar</span>
+    <img src="assets/img/icon-cerrar-blue.svg" alt="Cerrar"> 
+  </button>
+</div>
+
+<div mat-dialog-content class="modal-body" style="padding: 0;">
+  <div class="notification-item">
+    <div class="row">
+        <div class="col-8">
+            <h2 style="font-size: 16px !important; color: #1D2345; font-weight: 600;">Solicitud de Selección enviada.</h2>
+        </div>
+        <div class="col-4" style="text-align: end;">
+            <span style="color: #ABA7AF;">15/07/25 10:30</span>
+        </div>
+    </div>
+    <p>Se ha enviado tu solicitud de selección de colaborador.</p>
+  </div>
+  <div class="notification-item">
+    <div class="row">
+        <div class="col-8">
+            <h2 style="font-size: 16px !important; color: #1D2345; font-weight: 600;">Se agregaron curriculum.</h2>
+        </div>
+        <div class="col-4" style="text-align: end;">
+            <span style="color: #ABA7AF;">15/07/25 10:30</span>
+        </div>
+    </div>
+    <p>Se ha agregado un curriculum al proceso Nº 111 para el cargo "Nombre cargo".</p>
+  </div>
+  <div class="notification-item">
+    <div class="row">
+        <div class="col-8">
+            <h2 style="font-size: 16px !important; color: #1D2345; font-weight: 600;">Descarte Candidato.</h2>
+        </div>
+        <div class="col-4" style="text-align: end;">
+            <span style="color: #ABA7AF;">10/07/25 10:30</span>
+        </div>
+    </div>
+    <p>Se ha realizado el descarte del candidato "Nombre Apellido Apellido" del proceso Nº111 para el cargo "Nombre cargo".</p>
+  </div>
+</div>
+

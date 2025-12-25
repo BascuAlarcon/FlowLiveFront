@@ -1,0 +1,1 @@
+export type TipoIdentificacion = 'RUT' | 'DNI';

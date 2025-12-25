@@ -1,0 +1,11 @@
+.avatar {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #184D9B;
+  color: white;
+  text-transform: uppercase;
+  background-size: cover;
+  background-position: center;
+}

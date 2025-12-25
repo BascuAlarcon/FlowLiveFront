@@ -1,0 +1,34 @@
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb-item {
+  color: #6c757d;
+}
+
+.breadcrumb-item a {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: #495057;
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #266FE0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "-";
+  padding: 0 0.4rem;
+  color: #6c757d;
+  width: 20px;
+  height: 20px;
+  font-size: 17px; 
+}

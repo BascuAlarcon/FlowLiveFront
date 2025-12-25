@@ -1,0 +1,89 @@
+<div> 
+    <h3 class="title-section">Resumen Ejecutivo</h3>
+    <div class="resumen-ejecutivo">
+        <div class="card" *ngFor="let item of resumen" style="max-width: 19%;">
+            <div class="card-header">
+                <h3 style="font-weight: 700; font-size: 16px; color: #1D2345;">{{ item.titulo }}</h3>
+                <img src="assets/img/icon-question-mark-gray.svg" alt="Información" class="icon-info">
+            </div>
+            <div class="card-body">
+                <p class="valor">{{ item.valor }}</p>
+                <p class="subtitulo">
+                    <span class="badge">{{ item.subtitulo.split(' ')[0] }}</span>
+                    <span class="texto">{{ item.subtitulo.substring(item.subtitulo.indexOf(' ') + 1) }}</span>
+                </p>
+            </div>
+        </div>
+  </div>
+</div> 
+
+<div>
+    <h3 class="title-section">Flujo de Selección</h3>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos por Estado</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos activos por Urgencia</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos activos por Responsable</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <h3 class="title-section">Análisis de tendencias</h3>
+    <div class="row">
+        <div class="col-12 col-md-3">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos activos por Zona</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos por Oficina</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Procesos por Modalidad de Trabajo</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Evolución mensual de procesos</label>
+            </div> 
+        </div>
+    </div>
+</div> 
+ 
+
+<div>
+    <h3 class="title-section">Desglose detallado</h3>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Top 10 Empresas con más procesos activos</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Renta promedio de los 10 cargos más solicitados</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card" style="align-items: start;">
+                <label class="subtitle-section" for="">Solicitudes por Gerencia</label>
+            </div>
+        </div>
+    </div>
+</div>
