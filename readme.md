@@ -9,7 +9,28 @@ mantenedor
   usuarios
   productos
 live
-  grueso de la aplicación
+  función clave de la aplicación
+  La pantalla se separa en 2, a la izquierda estan los "carritos" y a la derecha esta la 
+  sección que permite agregar un producto al "carrito"
+    La secció derecha, será pickers de opciones:
+      Comprador: Nombre de la persona (habrá una parte para elegir los compradores de este mismo live y poder seleccionarlos, si el nombre es nuevo, un nuevo carro, si no, se agrega al carro de esa persona)
+      Producto : Polera / Pantalon / Poleron / ETC (mantenedor)
+      Color    : Rojo / Azul / Morado / Rosado / ETC (mantenedor)
+      Talla    : S / M / L / ETC (mantenedor)
+      Precio   : Esto se escribe (es el precio de venta)
+      Cantidad : Cantidad que se vende
+  Al presionar un carrito, se habré un modal con los datos de la persona y los productos, estos se podrán modificar
+  Debe dar la sensación de que se esta en "Live"
+    Cronometro de tiempo
+    Tit-Tac rojo que diga Live
+    Monto total recaudado hasta entonces
+    Unidades totales vendidas hasta entonces
+    Nombre vendedor y nombre de quien hace la gestión
+  Botón para "Cerrar Live", se registran los datos del live 
+    Al cerrar el live se congelan las ventas (sólo un usuario con poder debería poder modificarlo)
+    Los datos cuentan para métricas y funcionalidades como notificaciones
+  Se debe poder filtrar por carritos
+  Los carritos tienen estados: Pendientes | Pagado | Cancelado
 
 
 # Live Commerce SaaS – Frontend

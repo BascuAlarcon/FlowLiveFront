@@ -276,3 +276,31 @@ export interface LiveSession {
   totalAmount: number;
   pendingSales: number;
 }
+
+// Cart (Carrito) for Live Mode
+export interface Cart {
+  customerId: string;
+  customerName: string;
+  items: CartItem[];
+  totalAmount: number;
+  status: 'pending' | 'paid' | 'cancelled';
+  notes?: string;
+}
+
+// Cart Item
+export interface CartItem {
+  productVariantId: string;
+  productName: string;
+  variantName: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+// Quick Add Product Form
+export interface QuickAddProductForm {
+  customerName: string;
+  productVariantId: string;
+  quantity: number;
+  unitPrice: number;
+}

@@ -6,6 +6,12 @@
                 <!-- <p class="cc-titulo-header m-0 ms-4">Selección Personas</p> -->
             </div>
             <div class="d-flex align-items-center justify-content-end"> 
+                <!-- Botón de acceso rápido al Modo Live -->
+                <a routerLink="/live-mode" class="btn btn-live me-3" title="Modo Live">
+                    <span class="live-dot-small"></span>
+                    LIVE
+                </a>
+                
                 <div class="notification position-relative me-3" (click)="toggleModal()">
                     <img src="assets/img/icon-notification.svg" alt="notificaciones" width="24" height="24" class="notification-icon">
                     <span class="badge rounded-pill bg-danger notification-badge">2+</span>

@@ -55,11 +55,11 @@
       <div class="fecha-inputs">
         <div class="input-group">
           <label>Mes inicio</label>
-          <input type="text" [(ngModel)]="mesInicio" class="form-control" placeholder="Enero/2024">
+          <input type="text" [(ngModel)]="mesInicio" name="mesInicio" [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Enero/2024">
         </div>
         <div class="input-group">
           <label>Mes final</label>
-          <input type="text" [(ngModel)]="mesFinal" class="form-control" placeholder="Enero/2024">
+          <input type="text" [(ngModel)]="mesFinal" name="mesFinal" [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Enero/2024">
         </div>
       </div>
 
