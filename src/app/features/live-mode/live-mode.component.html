@@ -1,334 +1,343 @@
 <!-- src/app/features/live-mode/live-mode.component.html -->
 
 <div class="container" style="max-width: 90%;"> 
-    <div class="live-mode-container" >
+  <div class="live-mode-container">
     <!-- Header del Live -->
     <div class="live-header">
-        <div class="live-badge-container">
+      <div class="live-badge-container">
         <span class="live-badge">
-            <span class="live-dot"></span>
-            LIVE
+          <span class="live-dot"></span>
+          LIVE
         </span>
         <span class="live-timer">{{ elapsedTime() }}</span>
-        </div>
+      </div>
 
-        <div class="live-stats">
+      <div class="live-stats">
         <div class="stat-card">
-            <div class="stat-label">Total Recaudado</div>
-            <div class="stat-value">${{ totalRecaudado() | number:'1.0-0' }}</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Unidades Vendidas</div>
-            <div class="stat-value">{{ totalUnidadesVendidas() }}</div>
+          <div class="stat-label">Total Recaudado</div>
+          <div class="stat-value">${{ totalRecaudado() | number:'1.0-0' }}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Carritos</div>
-            <div class="stat-value">{{ carts().length }}</div>
+          <div class="stat-label">Unidades Vendidas</div>
+          <div class="stat-value">{{ totalUnidadesVendidas() }}</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-label">Carritos Activos</div>
+          <div class="stat-value">{{ pendingCount() }}</div>
         </div>
+      </div>
 
-        <button 
+      <button 
         class="btn-close-live" 
         (click)="closeLive()"
         [disabled]="!isLiveActive()">
         {{ isLiveActive() ? 'Cerrar Live' : 'Live Cerrado' }}
-        </button>
+      </button>
     </div>
 
     <!-- Contenedor principal dividido -->
     <div class="live-content">
-        <!-- Sección izquierda: Carritos -->
-        <div class="carts-section">
+      <!-- Sección izquierda: Carritos -->
+      <div class="carts-section">
         <div class="section-header">
-            <h2>Carritos ({{ filteredCarts().length }})</h2>
-            
-            <div class="filters">
+          <h2>Carritos ({{ filteredCarts().length }})</h2>
+          
+          <div class="filters">
             <input 
-                type="text" 
-                class="search-input"
-                placeholder="Buscar comprador..."
-                [ngModel]="searchCustomer()"
-                (ngModelChange)="searchCustomer.set($event)">
-            
-            <div class="status-filters">
-                <button 
-                class="filter-btn"
-                [class.active]="filterStatus() === 'all'"
-                (click)="filterStatus.set('all')">
-                Todos
-                </button>
-                <button 
-                class="filter-btn pending"
-                [class.active]="filterStatus() === 'pending'"
-                (click)="filterStatus.set('pending')">
-                Pendiente ({{ pendingCount() }})
-                </button>
-                <button 
-                class="filter-btn paid"
-                [class.active]="filterStatus() === 'paid'"
-                (click)="filterStatus.set('paid')">
-                Pagado ({{ paidCount() }})
-                </button>
-                <button 
-                class="filter-btn cancelled"
-                [class.active]="filterStatus() === 'cancelled'"
-                (click)="filterStatus.set('cancelled')">
-                Cancelado ({{ cancelledCount() }})
-                </button>
-            </div>
-            </div>
+              type="text" 
+              class="search-input"
+              placeholder="Buscar comprador..."
+              [ngModel]="searchCustomer()"
+              (ngModelChange)="searchCustomer.set($event)">
+          </div>
         </div>
 
         <div class="carts-list">
-            <div 
+          <div 
             *ngFor="let cart of filteredCarts()" 
             class="cart-card"
-            [class.pending]="cart.status === 'pending'"
-            [class.paid]="cart.status === 'paid'"
-            [class.cancelled]="cart.status === 'cancelled'"
+            [class.reserved]="cart.status === 'reserved'"
             (click)="openCartModal(cart)">
             
             <div class="cart-header">
-                <h3>{{ cart.customerName }}</h3>
-                <span class="cart-status" [attr.data-status]="cart.status">
-                {{ cart.status === 'pending' ? 'Pendiente' : 
-                    cart.status === 'paid' ? 'Pagado' : 'Cancelado' }}
-                </span>
+              <h3>{{ cart.Customer?.name || 'Cliente' }}</h3>
+              <span class="cart-status status-reserved">
+                Carrito Activo
+              </span>
             </div>
 
             <div class="cart-items">
-                <div *ngFor="let item of cart.items" class="cart-item-preview">
-                <span>{{ item.productName }} - {{ item.variantName }}</span>
+              <div *ngFor="let item of cart.SaleItem" class="cart-item-preview">
+                <span>{{ getItemDisplayName(item) }}</span>
                 <span>x{{ item.quantity }}</span>
-                </div>
+              </div>
             </div>
 
             <div class="cart-footer">
-                <span class="cart-total">Total: ${{ cart.totalAmount | number:'1.0-0' }}</span>
-                <span class="cart-items-count">{{ cart.items.length }} producto(s)</span>
+              <span class="cart-total">Total: ${{ cart.totalAmount | number:'1.0-0' }}</span>
+              <span class="cart-items-count">{{ cart.SaleItem?.length || 0 }} item(s)</span>
             </div>
 
             <div class="cart-actions" (click)="$event.stopPropagation()">
-                <button 
-                *ngIf="cart.status === 'pending'"
+              <button 
                 class="btn-action success"
-                (click)="updateCartStatus(cart, 'paid')">
-                Marcar Pagado
-                </button>
-                <button 
-                *ngIf="cart.status === 'pending'"
+                (click)="confirmCart(cart)">
+                Confirmar Carrito
+              </button>
+              <button 
                 class="btn-action danger"
-                (click)="updateCartStatus(cart, 'cancelled')">
+                (click)="cancelCart(cart)">
                 Cancelar
-                </button>
-                <button 
-                *ngIf="cart.status === 'paid'"
-                class="btn-action warning"
-                (click)="updateCartStatus(cart, 'pending')">
-                Marcar Pendiente
-                </button>
-                <button 
-                class="btn-action delete"
-                (click)="deleteCart(cart)">
-                Eliminar
-                </button>
+              </button>
             </div>
-            </div>
+          </div>
 
-            <div *ngIf="filteredCarts().length === 0" class="empty-state">
-            <p>No hay carritos {{ filterStatus() !== 'all' ? 'con ese estado' : '' }}</p>
-            </div>
+          <div *ngIf="filteredCarts().length === 0" class="empty-state">
+            <p>No hay carritos activos</p>
+          </div>
         </div>
-        </div>
+      </div>
 
-        <!-- Sección derecha: Agregar producto -->
-        <div class="add-product-section">
-        <h2>Agregar Producto</h2>
+      <!-- Sección derecha: Agregar LiveItem al carrito -->
+      <div class="add-product-section">
+        <h2>Agregar Item al Carrito</h2>
         
-        <form class="add-product-form" (submit)="$event.preventDefault(); addProductToCart()">
+        <form class="add-product-form" (submit)="$event.preventDefault(); addItemToCart()">
+          <!-- Selección de cliente -->
+          <div class="form-group">
+            <label for="customerSelect">Comprador</label>
+            <div class="row">
+              <div class="col col-lg-8"> 
+                <select 
+                  id="customerSelect"
+                  class="form-control"
+                  [value]="selectedCustomerId()"
+                  (change)="onCustomerChange($event)"
+                  required>
+                  <option value="">Seleccionar comprador...</option>
+                  <option *ngFor="let customer of customers()" [value]="customer.id">
+                    {{ customer.name }} {{ customer.username ? '(@' + customer.username + ')' : '' }}
+                  </option>
+                </select>
+              </div>
+              <div class="col col-lg-4"> 
+                <button 
+                  type="button"
+                  class="btn-new-customer"
+                  (click)="showNewCustomerForm.set(true)">
+                  + Nuevo Cliente
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de nuevo cliente -->
+          <div *ngIf="showNewCustomerForm()" class="new-customer-form">
+            <h3>Nuevo Cliente</h3>
             <div class="form-group">
-            <label for="customerName">Comprador</label>
+              <label>Nombre</label>
+              <input 
+                type="text"
+                class="form-control"
+                [value]="newCustomerName()"
+                (input)="newCustomerName.set($any($event.target).value)"
+                placeholder="Nombre del cliente">
+            </div>
+            <div class="form-group">
+              <label>Contacto</label>
+              <input 
+                type="text"
+                class="form-control"
+                [value]="newCustomerContact()"
+                (input)="newCustomerContact.set($any($event.target).value)"
+                placeholder="Teléfono, email o Instagram">
+            </div>
+            <div class="form-actions">
+              <button 
+                type="button"
+                class="btn-action success"
+                (click)="createNewCustomer()">
+                Crear Cliente
+              </button>
+              <button 
+                type="button"
+                class="btn-action"
+                (click)="showNewCustomerForm.set(false)">
+                Cancelar
+              </button>
+            </div>
+          </div>
+
+          <!-- Formulario dinámico de atributos -->
+          <div *ngIf="categoryAttributes().length > 0" class="attributes-section"> 
+            <form [formGroup]="attributesForm">
+              <div *ngFor="let attribute of categoryAttributes()" class="form-group">
+                <label [for]="'attr-' + attribute.id">
+                  {{ attribute.name }}
+                  <span *ngIf="attribute.isRequired" class="required-mark">*</span>
+                </label>
+
+                <!-- Campo tipo SELECT -->
+                <div 
+                  *ngIf="attribute.type === 'select'"
+                  class="button-group">
+                  <button
+                    type="button"
+                    *ngFor="let value of attribute.values" 
+                    class="btn-option"
+                    [class.selected]="attributesForm.get(attribute.id)?.value === value.value"
+                    [disabled]="!value.isActive"
+                    (click)="selectAttributeValue(attribute.id, value.value)">
+                    {{ value.value }}
+                  </button>
+                </div>
+
+                <!-- Campo tipo TEXT -->
+                <input 
+                  *ngIf="attribute.type === 'text'"
+                  type="text"
+                  [id]="'attr-' + attribute.id"
+                  [formControlName]="attribute.id"
+                  class="form-control"
+                  [placeholder]="'Ingrese ' + attribute.name"
+                  [required]="attribute.isRequired">
+
+                <!-- Campo tipo NUMBER -->
+                <input 
+                  *ngIf="attribute.type === 'number'"
+                  type="number"
+                  [id]="'attr-' + attribute.id"
+                  [formControlName]="attribute.id"
+                  class="form-control"
+                  [placeholder]="'Ingrese ' + attribute.name"
+                  [required]="attribute.isRequired"
+                  min="0">
+
+                <!-- Mensaje de error -->
+                <small 
+                  *ngIf="attributesForm.get(attribute.id)?.invalid && attributesForm.get(attribute.id)?.touched"
+                  class="error-message">
+                  Este campo es requerido
+                </small>
+              </div>
+            </form>
+          </div>
+
+          <!-- Precio del item -->
+          <div class="form-group">
+            <label for="price">Precio</label>
             <input 
-                type="text" 
-                id="customerName"
-                class="form-control"
-                placeholder="Nombre del comprador"
-                [value]="selectedCustomerName()"
-                (input)="updateCustomerName($any($event.target).value)"
-                [disabled]="!isLiveActive()"
-                required>
-            <small class="form-hint">Si el nombre es nuevo, se creará un nuevo carrito</small>
-            </div>
+              type="number" 
+              id="price"
+              class="form-control"
+              min="0"
+              step="100"
+              [value]="selectedPrice()"
+              (input)="selectedPrice.set(+$any($event.target).value)"
+              placeholder="Ingrese el precio"
+              required>
+          </div> 
 
-            <div class="form-group">
-            <label for="product">Producto</label>
-            <div class="options-grid">
-                <div 
-                *ngFor="let product of products()" 
-                class="option-item"
-                [class.selected]="selectedProductId() === product.id"
-                (click)="selectProduct(product.id)"
-                [class.disabled]="!isLiveActive()">
-                <span class="option-name">{{ product.name }}</span>
-                <span class="option-price">${{ product.basePrice | number:'1.0-0' }}</span>
-                </div>
-            </div>
-            </div>
-
-            <div class="form-row">
-            <div class="form-group">
-                <label for="color">Color</label>
-                <div class="options-grid compact">
-                <div 
-                    *ngFor="let color of availableColors" 
-                    class="option-item"
-                    [class.selected]="selectedColor() === color"
-                    (click)="selectColor(color)"
-                    [class.disabled]="!isLiveActive()">
-                    {{ color }}
-                </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="size">Talla</label>
-                <div class="options-grid compact">
-                <div 
-                    *ngFor="let size of availableSizes" 
-                    class="option-item"
-                    [class.selected]="selectedSize() === size"
-                    (click)="selectSize(size)"
-                    [class.disabled]="!isLiveActive()">
-                    {{ size }}
-                </div>
-                </div>
-            </div>
-            </div>
-
-            <div class="form-row">
-            <div class="form-group">
-                <label for="price">Precio</label>
-                <input 
-                type="number" 
-                id="price"
-                class="form-control"
-                placeholder="0"
-                [value]="selectedPrice()"
-                (input)="selectedPrice.set(+$any($event.target).value)"
-                [disabled]="!isLiveActive()"
-                min="0"
-                step="100"
-                required>
-            </div>
-
-            <div class="form-group">
-                <label for="quantity">Cantidad</label>
-                <input 
-                type="number" 
-                id="quantity"
-                class="form-control"
-                [value]="selectedQuantity()"
-                (input)="selectedQuantity.set(+$any($event.target).value)"
-                [disabled]="!isLiveActive()"
-                min="1"
-                required>
-            </div>
-            </div>
-
-            <div class="form-total">
-            <span>Total:</span>
-            <span class="total-amount">${{ (selectedPrice() * selectedQuantity()) | number:'1.0-0' }}</span>
-            </div>
-
-            <button 
-            type="submit" 
-            class="btn-add-product"
-            [disabled]="!isLiveActive()">
-            Agregar al Carrito
-            </button>
+          <!-- Botón agregar -->
+          <button 
+            type="submit"
+            class="btn-action success"
+            [disabled]="!selectedCustomerId() || !isAttributesFormValid() || loading()">
+            <span *ngIf="!loading()">Agregar al Carrito</span>
+            <span *ngIf="loading()">Agregando...</span>
+          </button>
         </form>
-        </div>
+      </div>
     </div>
-    </div>
+  </div>
+</div>
 
-    <!-- Modal de detalle de carrito -->
-    <div class="modal-overlay" *ngIf="showCartModal()" (click)="closeCartModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-        <h2>{{ selectedCart()?.customerName }}</h2>
-        <button class="btn-close-modal" (click)="closeCartModal()">×</button>
-        </div>
-
-        <div class="modal-body">
-        <div class="cart-status-badge" [attr.data-status]="selectedCart()?.status">
-            Estado: {{ selectedCart()?.status === 'pending' ? 'Pendiente' : 
-                    selectedCart()?.status === 'paid' ? 'Pagado' : 'Cancelado' }}
-        </div>
-
-        <div class="cart-items-detail">
-            <h3>Productos</h3>
-            <table class="items-table">
-            <thead>
-                <tr>
-                <th>Producto</th>
-                <th>Variante</th>
-                <th>Cant.</th>
-                <th>Precio Unit.</th>
-                <th>Total</th>
-                <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of selectedCart()?.items">
-                <td>{{ item.productName }}</td>
-                <td>{{ item.variantName }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>${{ item.unitPrice | number:'1.0-0' }}</td>
-                <td>${{ item.totalPrice | number:'1.0-0' }}</td>
-                <td>
-                    <button 
-                    class="btn-delete-item"
-                    (click)="removeItemFromCart(selectedCart()!, item)"
-                    [disabled]="!isLiveActive()">
-                    🗑️
-                    </button>
-                </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                <td colspan="4"><strong>Total</strong></td>
-                <td colspan="2"><strong>${{ selectedCart()?.totalAmount | number:'1.0-0' }}</strong></td>
-                </tr>
-            </tfoot>
-            </table>
-        </div>
-
-        <div class="modal-actions">
-            <button 
-            *ngIf="selectedCart()?.status === 'pending'"
-            class="btn-modal-action success"
-            (click)="updateCartStatus(selectedCart()!, 'paid'); closeCartModal()">
-            Marcar como Pagado
-            </button>
-            <button 
-            *ngIf="selectedCart()?.status === 'pending'"
-            class="btn-modal-action danger"
-            (click)="updateCartStatus(selectedCart()!, 'cancelled'); closeCartModal()">
-            Cancelar Carrito
-            </button>
-            <button 
-            *ngIf="selectedCart()?.status !== 'pending'"
-            class="btn-modal-action warning"
-            (click)="updateCartStatus(selectedCart()!, 'pending'); closeCartModal()">
-            Marcar como Pendiente
-            </button>
-            <button class="btn-modal-action secondary" (click)="closeCartModal()">
-            Cerrar
-            </button>
-        </div>
-        </div>
-    </div>
+<!-- Modal de detalle de carrito -->
+<div *ngIf="showCartModal()" class="modal-overlay" (click)="closeCartModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ selectedCart()?.Customer?.name || 'Carrito' }}</h2>
+      <button class="btn-close-modal" (click)="closeCartModal()">×</button>
     </div>
 
+    <div class="modal-body">
+      <div class="cart-details">
+        <p><strong>Cliente:</strong> {{ selectedCart()?.Customer?.name }}</p>
+        <p *ngIf="selectedCart()?.Customer?.username">
+          <strong>Usuario:</strong> @{{ selectedCart()?.Customer?.username }}
+        </p>
+        <p *ngIf="selectedCart()?.Customer?.contact">
+          <strong>Contacto:</strong> {{ selectedCart()?.Customer?.contact }}
+        </p>
+        <p>
+          <strong>Estado:</strong> 
+          <span class="status-badge status-reserved">Carrito Activo</span>
+        </p>
+      </div>
+
+      <h3>Items en el carrito</h3>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Atributos</th>
+            <th>Cantidad</th>
+            <th>Precio Unit.</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of selectedCart()?.SaleItem">
+            <td>{{ getCategoryName(item.LiveItem?.categoryId || '') }}</td>
+            <td>{{ getItemAttributes(item.LiveItem!) }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unitPrice | number:'1.0-0' }}</td>
+            <td>${{ item.totalPrice | number:'1.0-0' }}</td>
+            <td>
+              <button 
+                class="btn-action danger"
+                (click)="removeItemFromCart(selectedCart()!, item.id)">
+                Quitar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>${{ selectedCart()?.totalAmount || 0 | number:'1.0-0' }}</span>
+        </div>
+        <div class="summary-row total">
+          <span><strong>Total:</strong></span>
+          <span><strong>${{ selectedCart()?.totalAmount || 0 | number:'1.0-0' }}</strong></span>
+        </div>
+      </div>
+
+      <div *ngIf="selectedCart()?.notes" class="cart-notes">
+        <strong>Notas:</strong>
+        <p>{{ selectedCart()?.notes }}</p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        class="btn-action success"
+        (click)="confirmCart(selectedCart()!); closeCartModal()">
+        Confirmar y Registrar Pago
+      </button>
+      <button 
+        class="btn-action danger"
+        (click)="cancelCart(selectedCart()!); closeCartModal()">
+        Cancelar Carrito
+      </button>
+      <button 
+        class="btn-action close"
+        (click)="closeCartModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
 </div>

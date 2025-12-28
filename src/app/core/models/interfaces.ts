@@ -8,7 +8,9 @@ import {
   PaymentStatus, 
   PaymentMethod, 
   ShipmentStatus, 
-  ShipmentType 
+  ShipmentType,
+  LiveItemStatus,
+  AttributeType
 } from '../constants/enums';
 
 // JWT Payload
@@ -43,7 +45,7 @@ export interface Organization {
   updatedAt: string;
 }
 
-// Product
+// Product (Deprecated - usar LiveItems)
 export interface Product {
   id: string;
   organizationId: string;
@@ -58,7 +60,7 @@ export interface Product {
   updatedAt: string;
 }
 
-// ProductVariant
+// ProductVariant (Deprecated - usar LiveItems)
 export interface ProductVariant {
   id: string;
   productId: string;
@@ -70,6 +72,70 @@ export interface ProductVariant {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+// ===== NUEVO MODELO: LiveItems y Categorías =====
+
+// ProductCategory
+export interface ProductCategory {
+  id: string;
+  organizationId: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  attributes?: CategoryAttribute[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// CategoryAttribute
+export interface CategoryAttribute {
+  id: string;
+  categoryId: string;
+  name: string;
+  type: AttributeType;
+  isRequired: boolean;
+  order: number;
+  values?: AttributeValue[];
+  createdAt: string;
+}
+
+// AttributeValue
+export interface AttributeValue {
+  id: string;
+  attributeId: string;
+  value: string;
+  hexCode: string | null;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+// LiveItem (⭐ Core)
+export interface LiveItem {
+  id: string;
+  organizationId: string;
+  categoryId: string;
+  category?: ProductCategory;
+  livestreamId: string | null;
+  price: number;
+  quantity: number;
+  status: LiveItemStatus;
+  imageUrl: string | null;
+  notes: string | null;
+  attributes?: LiveItemAttributeValue[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// LiveItemAttributeValue
+export interface LiveItemAttributeValue {
+  id: string;
+  liveItemId: string;
+  attributeValueId: string | null;
+  attributeValue?: AttributeValue;
+  customValue: string | null;
+  createdAt: string;
 }
 
 // Customer
@@ -100,37 +166,36 @@ export interface Livestream {
   updatedAt: string;
 }
 
-// Sale
+// Sale (Carrito/Venta)
 export interface Sale {
   id: string;
   organizationId: string;
   livestreamId: string | null;
   customerId: string;
-  customer?: Customer;
+  Customer?: Customer;
   sellerId: string;
   seller?: User;
-  status: SaleStatus;
+  status: SaleStatus; // 'reserved' = carrito, 'confirmed' = venta
   totalAmount: number;
   discountAmount: number;
   notes: string | null;
-  items?: SaleItem[];
+  SaleItem?: SaleItem[];
   payments?: Payment[];
   shipment?: Shipment;
   createdAt: string;
   updatedAt: string;
 }
 
-// SaleItem
+// SaleItem (actualizado para LiveItems)
 export interface SaleItem {
   id: string;
   saleId: string;
-  productId: string;
-  product?: Product;
-  productVariantId: string;
-  productVariant?: ProductVariant;
+  liveItemId: string;
+  LiveItem?: LiveItem;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  notes: string | null;
   createdAt: string;
 }
 
@@ -162,6 +227,75 @@ export interface Shipment {
 }
 
 // DTOs
+
+// ===== LiveItems =====
+export interface CreateLiveItemDto {
+  categoryId: string;
+  livestreamId?: string;
+  price: number;
+  quantity: number;
+  imageUrl?: string;
+  notes?: string;
+  attributes: {
+    attributeValueId?: string;
+    customValue?: string;
+  }[];
+}
+
+export interface UpdateLiveItemDto {
+  price?: number;
+  quantity?: number;
+  imageUrl?: string;
+  notes?: string;
+  status?: LiveItemStatus;
+}
+
+// ===== Categories =====
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateCategoryDto {
+  name?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export interface CreateCategoryAttributeDto {
+  name: string;
+  type: AttributeType;
+  isRequired: boolean;
+  order?: number;
+}
+
+export interface CreateAttributeValueDto {
+  value: string;
+  hexCode?: string;
+  order?: number;
+}
+
+// ===== Carts =====
+export interface AddItemToCartDto {
+  customerId: string;
+  liveItemId: string;
+  quantity: number;
+  livestreamId?: string;
+}
+
+export interface CartResponse {
+  id: string; // saleId
+  customerId: string;
+  customer?: Customer;
+  livestreamId: string | null;
+  items: SaleItem[];
+  totalAmount: number;
+  status: SaleStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ===== Auth =====
 export interface LoginDto {
   email: string;
   password: string;

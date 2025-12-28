@@ -62,8 +62,15 @@ Esta aplicación es **multi-organización (multi-tenant)**:
 
 - Cada usuario pertenece a una o más organizaciones
 - El token JWT contiene `organizationId` que se envía en cada request
-- Todo dato de negocio (ventas, productos, clientes, livestreams) está asociado a una organización
+- Todo dato de negocio (ventas, LiveItems, clientes, livestreams) está asociado a una organización
 - No debe existir acceso cruzado entre organizaciones en la UI
+
+### Modelo de Negocio: Live Shopping
+
+✅ **Items individuales**: Cada producto mostrado es único o tiene pocas unidades (1-3)  
+✅ **Sin inventario tradicional**: No hay stock de "productos" sino LiveItems individuales que están disponibles, reservados o vendidos  
+✅ **Carritos persistentes**: Un cliente puede pedir items en varios lives diferentes y todo se acumula en un solo carrito hasta que pague  
+✅ **Categorías dinámicas**: Los atributos varían según la categoría (ropa tiene talla/color, joyas tienen material/tamaño, etc.)
 
 El foco principal es **ventas durante livestreams**, por lo que la UI debe priorizar:
 - rapidez y fluidez
@@ -104,14 +111,22 @@ src/
 │   │   ├── dashboard/
 │   │   │   ├── dashboard.component.ts
 │   │   │   └── dashboard.service.ts
-│   │   ├── products/
-│   │   │   ├── product-list/
-│   │   │   ├── product-form/
-│   │   │   └── products.service.ts
+│   │   ├── categories/
+│   │   │   ├── category-list/
+│   │   │   ├── category-form/
+│   │   │   └── categories.service.ts
+│   │   ├── liveitems/
+│   │   │   ├── liveitem-list/
+│   │   │   ├── liveitem-form/
+│   │   │   └── liveitems.service.ts
 │   │   ├── customers/
 │   │   │   ├── customer-list/
 │   │   │   ├── customer-form/
 │   │   │   └── customers.service.ts
+│   │   ├── carts/
+│   │   │   ├── cart-list/
+│   │   │   ├── cart-detail/
+│   │   │   └── carts.service.ts
 │   │   ├── sales/
 │   │   │   ├── sale-list/
 │   │   │   ├── sale-form/
@@ -215,25 +230,25 @@ Cada servicio debe:
 Ejemplo:
 ```typescript
 @Injectable({ providedIn: 'root' })
-export class ProductsService {
-  private apiUrl = `${environment.apiUrl}/products`;
+export class LiveItemsService {
+  private apiUrl = `${environment.apiUrl}/liveitems`;
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+  getAll(filters?: { status?: string; categoryId?: string; livestreamId?: string }): Observable<LiveItem[]> {
+    return this.http.get<LiveItem[]>(this.apiUrl, { params: filters as any });
   }
 
-  getById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  getById(id: string): Observable<LiveItem> {
+    return this.http.get<LiveItem>(`${this.apiUrl}/${id}`);
   }
 
-  create(product: CreateProductDto): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+  create(liveItem: CreateLiveItemDto): Observable<LiveItem> {
+    return this.http.post<LiveItem>(this.apiUrl, liveItem);
   }
 
-  update(id: string, product: UpdateProductDto): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+  update(id: string, liveItem: UpdateLiveItemDto): Observable<LiveItem> {
+    return this.http.patch<LiveItem>(`${this.apiUrl}/${id}`, liveItem);
   }
 
   delete(id: string): Observable<void> {
@@ -258,40 +273,54 @@ export class ProductsService {
 - Total vendido hoy
 - Gráficos con Chart.js
 
-### 3. Productos
-- Lista con búsqueda y filtros
+### 3. Categorías
+- Lista de categorías de productos
 - CRUD completo
-- Ver stock disponible
-- Activar/desactivar productos
+- Gestión de atributos dinámicos (Color, Talla, Material, etc.)
+- Valores de atributos por categoría
 
-### 4. Clientes
+### 4. LiveItems (Items para Vender)
+- Lista con búsqueda y filtros por estado, categoría, livestream
+- Crear items individuales con atributos dinámicos
+- Ver estado: disponible, reservado, vendido
+- Asociar items a livestreams
+- Editar precio y atributos
+
+### 5. Clientes
 - Lista con búsqueda
 - Registro rápido durante venta
 - Ver historial de compras
 
-### 5. Ventas
-- Lista con filtros por estado, fecha, cliente
-- Crear venta (seleccionar cliente + productos)
-- Ver detalle de venta
-- Registrar pagos
-- Cancelar venta
-- Ver estado de envío
+### 6. Carritos (⭐ Core del Sistema)
+- Ver carritos activos (status: reserved)
+- Carrito por cliente (persistente entre lives)
+- Agregar LiveItems al carrito durante transmisiones
+- Ver items reservados en el carrito
+- Confirmar carrito → convierte a venta (status: confirmed)
+- Cancelar carrito → libera items
 
-### 6. 🔴 Modo Live (DIFERENCIADOR)
+### 7. Ventas
+- Lista con filtros por estado, fecha, cliente
+- Ver detalle de venta confirmada
+- Registrar pagos
+- Ver estado de envío
+- Ventas provienen de carritos confirmados
+
+### 8. 🔴 Modo Live (DIFERENCIADOR)
 **Componente optimizado para usar durante transmisiones:**
 
 Features:
 - Vista simplificada (sin menú completo)
-- Búsqueda rápida de productos
-- Stock visible en tiempo real
-- Crear venta en 3 pasos:
+- Búsqueda rápida de LiveItems disponibles
+- Ver estado de items en tiempo real (disponible/reservado/vendido)
+- Agregar items a carritos en 2 pasos:
   1. Seleccionar cliente (o crear rápido)
-  2. Agregar productos
-  3. Confirmar
+  2. Seleccionar LiveItem → agregar al carrito
+- Ver carritos activos en la sesión
 - Ver total vendido en la sesión
-- Ver ventas pendientes de confirmar
 - Timer del livestream
 - Optimizado para móvil (touch-friendly)
+- Pantalla dividida: carritos a la izquierda, selector de items a la derecha
 
 ```typescript
 interface LiveSession {
@@ -303,12 +332,12 @@ interface LiveSession {
 }
 ```
 
-### 7. Livestreams
+### 9. Livestreams
 - Iniciar/finalizar livestream
-- Ver ventas asociadas al livestream
+- Ver carritos y ventas asociados al livestream
 - Métricas por livestream
 
-### 8. Métricas
+### 10. Métricas
 - Dashboard con gráficos
 - Filtros por fecha
 - Total vendido vs pagado
@@ -353,36 +382,75 @@ interface Organization {
 }
 ```
 
-#### Product
+#### ProductCategory
 ```typescript
-interface Product {
+interface ProductCategory {
   id: string;
   organizationId: string;
   name: string;
   description: string | null;
-  basePrice: number;
-  sku: string;
-  imageUrl: string | null;
   isActive: boolean;
-  stockQuantity?: number; // calculado
+  attributes?: CategoryAttribute[]; // populated
   createdAt: string;
   updatedAt: string;
 }
 ```
 
-#### ProductVariant
+#### CategoryAttribute
 ```typescript
-interface ProductVariant {
+interface CategoryAttribute {
   id: string;
-  productId: string;
-  organizationId: string;
+  categoryId: string;
   name: string;
-  sku: string;
-  price: number;
-  stockQuantity: number;
+  type: AttributeType; // 'select' | 'text' | 'number'
+  isRequired: boolean;
+  order: number;
+  values?: AttributeValue[]; // populated
+  createdAt: string;
+}
+```
+
+#### AttributeValue
+```typescript
+interface AttributeValue {
+  id: string;
+  attributeId: string;
+  value: string;
+  hexCode: string | null; // para colores
+  order: number;
   isActive: boolean;
   createdAt: string;
+}
+```
+
+#### LiveItem (⭐ Core)
+```typescript
+interface LiveItem {
+  id: string;
+  organizationId: string;
+  categoryId: string;
+  category?: ProductCategory; // populated
+  livestreamId: string | null;
+  price: number;
+  quantity: number; // típicamente 1-3
+  status: LiveItemStatus; // 'available' | 'reserved' | 'sold'
+  imageUrl: string | null;
+  notes: string | null;
+  attributes?: LiveItemAttributeValue[]; // populated
+  createdAt: string;
   updatedAt: string;
+}
+```
+
+#### LiveItemAttributeValue
+```typescript
+interface LiveItemAttributeValue {
+  id: string;
+  liveItemId: string;
+  attributeValueId: string;
+  attributeValue?: AttributeValue; // populated
+  customValue: string | null; // para atributos tipo 'text' o 'number'
+  createdAt: string;
 }
 ```
 
@@ -418,7 +486,7 @@ interface Livestream {
 }
 ```
 
-#### Sale
+#### Sale (Carrito/Venta)
 ```typescript
 interface Sale {
   id: string;
@@ -428,7 +496,7 @@ interface Sale {
   customer?: Customer; // populated
   sellerId: string;
   seller?: User; // populated
-  status: SaleStatus;
+  status: SaleStatus; // 'reserved' (carrito) | 'confirmed' (venta) | 'cancelled'
   totalAmount: number;
   discountAmount: number;
   notes: string | null;
@@ -438,6 +506,14 @@ interface Sale {
   createdAt: string;
   updatedAt: string;
 }
+
+/**
+ * NOTA: Sale funciona como:
+ * - Carrito cuando status = 'reserved' (editable, items reservados)
+ * - Venta cuando status = 'confirmed' (no editable, items vendidos)
+ * - Un cliente solo puede tener 1 carrito activo a la vez
+ * - El carrito persiste entre diferentes livestreams
+ */
 ```
 
 #### SaleItem
@@ -445,13 +521,12 @@ interface Sale {
 interface SaleItem {
   id: string;
   saleId: string;
-  productId: string;
-  product?: Product; // populated
-  productVariantId: string;
-  productVariant?: ProductVariant; // populated
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
+  liveItemId: string;
+  liveItem?: LiveItem; // populated
+  quantity: number; // cantidad del LiveItem
+  unitPrice: number; // precio al momento de agregar
+  totalPrice: number; // unitPrice * quantity
+  notes: string | null;
   createdAt: string;
 }
 ```
@@ -490,16 +565,29 @@ interface Shipment {
 ### DTOs (Data Transfer Objects)
 
 ```typescript
-interface CreateSaleDto {
+interface AddItemToCartDto {
   customerId: string;
+  liveItemId: string;
+  quantity: number;
   livestreamId?: string;
-  items: {
-    productVariantId: string;
-    quantity: number;
-    unitPrice: number;
-  }[];
-  discountAmount?: number;
+}
+
+interface CreateLiveItemDto {
+  categoryId: string;
+  livestreamId?: string;
+  price: number;
+  quantity: number;
+  imageUrl?: string;
   notes?: string;
+  attributes: {
+    attributeValueId?: string; // para atributos tipo 'select'
+    customValue?: string; // para atributos tipo 'text' o 'number'
+  }[];
+}
+
+interface CreateCategoryDto {
+  name: string;
+  description?: string;
 }
 
 interface CreatePaymentDto {
@@ -507,11 +595,6 @@ interface CreatePaymentDto {
   method: PaymentMethod;
   amount: number;
   reference?: string;
-}
-
-interface CreateProductDto {
-  name: string;
-  description?: string;
 }
 
 interface CreateCustomerDto {
@@ -548,6 +631,18 @@ export enum Platform {
   OTHER = 'other'
 }
 
+export enum LiveItemStatus {
+  AVAILABLE = 'available',
+  RESERVED = 'reserved',
+  SOLD = 'sold'
+}
+
+export enum AttributeType {
+  SELECT = 'select',
+  TEXT = 'text',
+  NUMBER = 'number'
+}
+
 export enum SaleStatus {
   RESERVED = 'reserved',
   CONFIRMED = 'confirmed',
@@ -579,14 +674,6 @@ export enum ShipmentType {
   PICKUP = 'pickup'
 }
 
-export enum StockMovementType {
-  RESERVE = 'reserve',
-  SALE = 'sale',
-  CANCEL = 'cancel',
-  ADJUSTMENT = 'adjustment',
-  RETURN = 'return'
-}
-
 export enum MessageType {
   ORDER_CONFIRMED = 'order_confirmed',
   PAYMENT_REMINDER = 'payment_reminder',
@@ -599,9 +686,15 @@ export enum MessageType {
 
 ```typescript
 // Traducción de estados para UI
+export const LIVEITEM_STATUS_LABELS: Record<LiveItemStatus, string> = {
+  [LiveItemStatus.AVAILABLE]: 'Disponible',
+  [LiveItemStatus.RESERVED]: 'Reservado',
+  [LiveItemStatus.SOLD]: 'Vendido'
+};
+
 export const SALE_STATUS_LABELS: Record<SaleStatus, string> = {
-  [SaleStatus.RESERVED]: 'Reservada',
-  [SaleStatus.CONFIRMED]: 'Confirmada',
+  [SaleStatus.RESERVED]: 'Carrito Activo',
+  [SaleStatus.CONFIRMED]: 'Venta Confirmada',
   [SaleStatus.CANCELLED]: 'Cancelada'
 };
 
@@ -612,6 +705,12 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
 };
 
 // Colores para badges
+export const LIVEITEM_STATUS_COLORS: Record<LiveItemStatus, string> = {
+  [LiveItemStatus.AVAILABLE]: 'success',
+  [LiveItemStatus.RESERVED]: 'warning',
+  [LiveItemStatus.SOLD]: 'secondary'
+};
+
 export const SALE_STATUS_COLORS: Record<SaleStatus, string> = {
   [SaleStatus.RESERVED]: 'warning',
   [SaleStatus.CONFIRMED]: 'success',
@@ -621,67 +720,82 @@ export const SALE_STATUS_COLORS: Record<SaleStatus, string> = {
 
 ---
 
-## 🛒 Ventas (Core del sistema)
+## 🛒 Carritos y Ventas (Core del sistema)
 
-Una venta en la UI:
-- DEBE tener un cliente seleccionado
-- DEBE tener al menos un producto
-- Puede estar asociada a un livestream activo
-- Muestra estado visual (badge con color)
-- Permite registrar pagos parciales
-- Calcula automáticamente totales
+### Concepto Clave: Carritos Persistentes
 
-### Estados de venta y acciones permitidas:
+Un **Sale** puede ser:
+- **Carrito** cuando `status = 'reserved'` (editable)
+- **Venta** cuando `status = 'confirmed'` (no editable)
 
-**RESERVED (Reservada)**
-- ✅ Registrar pago
-- ✅ Cancelar venta
-- ✅ Editar (agregar productos)
-- ⚠️ Stock reservado pero no descontado
+### Reglas de Negocio:
 
-**CONFIRMED (Confirmada)**
+✅ **Un cliente puede tener SOLO 1 carrito activo** (`status=reserved`) a la vez  
+✅ **El carrito persiste entre diferentes livestreams**  
+✅ **Items de varios lives se acumulan en el mismo carrito**  
+✅ **LiveItems pasan de `available` → `reserved` al agregar al carrito**  
+✅ **LiveItems pasan de `reserved` → `sold` al confirmar el carrito**
+
+### Estados y acciones permitidas:
+
+**RESERVED (Carrito Activo)**
+- ✅ Agregar más LiveItems
+- ✅ Quitar items (libera LiveItems)
+- ✅ Registrar pago parcial
+- ✅ Confirmar carrito → convierte a venta
+- ✅ Cancelar → libera todos los LiveItems
+- ⚠️ LiveItems en estado `reserved`
+
+**CONFIRMED (Venta Confirmada)**
 - ✅ Ver detalle
 - ✅ Crear envío
 - ✅ Imprimir
-- ❌ No se puede cancelar si tiene pagos
-- ✅ Stock descontado
+- ❌ No se puede editar
+- ✅ LiveItems en estado `sold`
 
 **CANCELLED (Cancelada)**
 - 👁️ Solo lectura
-- ℹ️ Stock liberado
+- ℹ️ LiveItems liberados
 
-### Flujo UI para Crear Venta
+### Flujo UI para Agregar Items a Carrito (Durante Live)
 
 ```typescript
-// 1. Seleccionar o crear cliente
-step1: SelectCustomerComponent
-  - Buscar cliente existente
+// 1. Seleccionar cliente
+SelectCustomerComponent
+  - Buscar cliente existente (muestra si tiene carrito activo)
   - Botón "Crear cliente rápido" (modal)
-  - Continuar a productos
+  - Automáticamente obtiene o crea su carrito
 
-// 2. Agregar productos
-step2: AddProductsComponent
-  - Buscar productos (con stock visible)
-  - Seleccionar variante
-  - Agregar cantidad
-  - Ver total parcial
-  - Lista de items agregados
+// 2. Seleccionar LiveItem
+SelectLiveItemComponent
+  - Listar LiveItems disponibles (status='available')
+  - Filtrar por categoría
+  - Ver atributos (color, talla, etc.)
+  - Ver precio
+  - Botón "Agregar al Carrito"
 
-// 3. Confirmar y crear
-step3: ConfirmSaleComponent
-  - Resumen (cliente, productos, total)
-  - Descuento opcional
-  - Notas opcionales
-  - Botón "Crear Venta"
+// 3. Agregar al carrito
+API: POST /api/carts/items
+  {
+    customerId: "...",
+    liveItemId: "...",
+    quantity: 1,
+    livestreamId: "..."
+  }
+  
+  Resultado:
+  - LiveItem pasa a estado 'reserved'
+  - Se agrega al carrito del cliente
+  - UI actualiza vista de carritos activos
 ```
 
-### Componente de Pago
+### Componente de Pago (Confirmar Carrito)
 
 ```typescript
-// Modal o sidebar para registrar pago
+// Modal para registrar pago y confirmar carrito
 RegisterPaymentComponent {
-  saleId: string;
-  pendingAmount: number; // calculado
+  cartId: string; // Sale con status='reserved'
+  totalAmount: number;
   
   form: {
     amount: number;
@@ -692,8 +806,10 @@ RegisterPaymentComponent {
 ```
 
 **Validaciones:**
-- `amount` no puede ser mayor que el pendiente
-- Si `amount` >= `pendingAmount`: mostrar mensaje "Venta será confirmada"
+- `amount` no puede ser mayor que el total
+- Si `amount` >= `totalAmount`: confirmar carrito automáticamente
+- Backend cambiará Sale a `status='confirmed'`
+- Backend cambiará todos los LiveItems a `status='sold'`
 - Deshabilitar botón si `amount <= 0`
 
 ---
@@ -837,74 +953,93 @@ export class MetricsDashboardComponent {
 
 ---
 
-## 🔄 Flujo UI de una Venta
+## 🔄 Flujo UI de Carritos y Ventas
 
-### 1. Crear Venta (status: `reserved`)
+### 1. Agregar Item a Carrito (Durante Live)
 
 ```
-Usuario hace click en "Nueva Venta"
+Usuario hace click en "Agregar al Carrito" desde Modo Live
   ↓
-Paso 1: Seleccionar Cliente
+Seleccionar Cliente
   - Buscar cliente existente
   - O crear nuevo (modal rápido)
-  - Continuar
+  - Sistema verifica si tiene carrito activo (status='reserved')
   ↓
-Paso 2: Agregar Productos
-  - Buscar producto
-  - Ver stock disponible
-  - Seleccionar cantidad
-  - Agregar a lista
-  - Repetir para más productos
+Seleccionar LiveItem
+  - Listar items disponibles (status='available')
+  - Filtrar por categoría
+  - Ver atributos (color, talla, material, etc.)
+  - Ver precio
   ↓
-Paso 3: Confirmar
-  - Ver resumen
-  - Agregar descuento (opcional)
-  - Agregar notas (opcional)
-  - Click "Crear Venta"
-  ↓
-API: POST /api/sales
-  - Backend valida stock
-  - Crea venta en estado "reserved"
-  - Reserva stock
-  ↓
-UI muestra venta creada
-  - Mostrar mensaje de éxito
-  - Redirigir a detalle de venta
-  - Mostrar botón "Registrar Pago"
-```
-
-### 2. Registrar Pago
-
-```
-Usuario abre detalle de venta
-  ↓
-Click "Registrar Pago"
-  ↓
-Modal con formulario:
-  - Monto (máx: monto pendiente)
-  - Método de pago
-  - Referencia (opcional)
-  ↓
-API: POST /api/payments
+API: POST /api/carts/items
   {
-    saleId: "...",
-    amount: 100,
-    method: "transfer"
+    customerId: "customer_123",
+    liveItemId: "item_456",
+    quantity: 1,
+    livestreamId: "live_789"
   }
   ↓
 Backend:
-  - Crea payment
-  - Si total pagado >= total venta:
-    * Cambia sale.status a "confirmed"
-    * Descuenta stock
+  - Busca o crea carrito para el cliente (Sale con status='reserved')
+  - Agrega SaleItem al carrito
+  - Cambia LiveItem a status='reserved'
+  - Calcula nuevo totalAmount
   ↓
-UI actualiza venta
-  - Refresca detalle
-  - Muestra nuevo estado
-  - Si está confirmada: habilitar "Crear Envío"
+UI actualiza:
+  - Refresca vista de carritos activos
+  - Muestra mensaje de éxito
+  - LiveItem desaparece de items disponibles
+  - Aparece en el carrito del cliente
 ```
 
-### 3. Crear Envío
+### 2. Agregar Más Items al Mismo Carrito (Otro Live)
+
+```
+Días después, en otro livestream
+  ↓
+Cliente pide más items
+  ↓
+API: POST /api/carts/items (mismo customerId)
+  ↓
+Backend:
+  - Encuentra el carrito ACTIVO del cliente (status='reserved')
+  - Agrega nuevos items al MISMO carrito
+  - Items se acumulan
+  ↓
+UI muestra:
+  - Carrito actualizado con más items
+  - Total acumulado
+```
+
+### 3. Confirmar Carrito (Registrar Pago)
+
+```
+Usuario abre carrito del cliente
+  ↓
+Click "Confirmar y Registrar Pago"
+  ↓
+Modal con formulario:
+  - Monto (total del carrito)
+  - Método de pago (transferencia, efectivo, etc.)
+  - Referencia (opcional)
+  ↓
+API: POST /api/carts/:cartId/confirm
+  + POST /api/payments
+  ↓
+Backend:
+  - Cambia Sale.status a 'confirmed'
+  - Cambia todos los LiveItems a status='sold'
+  - Crea Payment con el monto
+  - Ya no se puede editar
+  ↓
+UI actualiza:
+  - Refresca detalle
+  - Muestra badge "Venta Confirmada"
+  - Habilita "Crear Envío"
+  - Carrito desaparece de carritos activos
+```
+
+### 4. Crear Envío
 
 ```
 Venta confirmada
@@ -924,52 +1059,86 @@ UI muestra envío creado
   - Actualizar estados
 ```
 
-### 4. Cancelar Venta
+### 5. Cancelar Carrito
 
 ```
-Usuario click "Cancelar Venta"
+Usuario click "Cancelar Carrito"
   ↓
 Confirmación (dialog)
-  "¿Estás seguro? El stock será liberado"
+  "¿Estás seguro? Todos los items serán liberados"
   ↓
-API: PUT /api/sales/:id/cancel
+API: POST /api/carts/:cartId/cancel
   ↓
 Backend:
-  - Valida que no tenga pagos confirmados
-  - Cambia status a "cancelled"
-  - Libera stock reservado
+  - Cambia Sale.status a 'cancelled'
+  - Cambia todos los LiveItems a status='available'
+  - Items quedan disponibles para otros clientes
   ↓
-UI actualiza venta
+UI actualiza:
   - Muestra badge "Cancelada"
   - Deshabilita acciones
+  - Carrito desaparece de carritos activos
+  - LiveItems vuelven a aparecer como disponibles
+```
+
+### 6. Quitar Item del Carrito
+
+```
+Usuario en detalle de carrito activo
+  ↓
+Click icono "eliminar" en un item
+  ↓
+Confirmación
+  ↓
+API: DELETE /api/carts/:cartId/items/:itemId
+  ↓
+Backend:
+  - Elimina SaleItem
+  - Cambia LiveItem a status='available'
+  - Recalcula totalAmount
+  ↓
+UI actualiza:
+  - Refresca carrito
+  - LiveItem vuelve a estar disponible
+  - Actualiza total
 ```
 
 ---
 
-## 🔒 Validaciones de Stock (Frontend)
+## 🔒 Validaciones (Frontend)
 
-Antes de permitir agregar productos a una venta:
+### Validaciones al Agregar LiveItem a Carrito
 
 ```typescript
-// ProductSelectorComponent
-selectProduct(variant: ProductVariant, quantity: number) {
-  if (quantity > variant.stockQuantity) {
+// LiveItemSelectorComponent
+selectLiveItem(item: LiveItem, quantity: number) {
+  // 1. Validar estado
+  if (item.status !== 'available') {
     this.notificationService.error(
-      `Stock insuficiente. Disponible: ${variant.stockQuantity}`
+      `Este item no está disponible. Estado actual: ${item.status}`
     );
     return;
   }
   
-  // Agregar a lista de items
-  this.addItemToSale(variant, quantity);
+  // 2. Validar cantidad
+  if (quantity > item.quantity) {
+    this.notificationService.error(
+      `Cantidad no disponible. Máximo: ${item.quantity}`
+    );
+    return;
+  }
+  
+  // 3. Agregar al carrito
+  this.addItemToCart(item, quantity);
 }
 ```
 
 **Validaciones adicionales:**
-- Mostrar stock en tiempo real junto a cada producto
-- Deshabilitar productos sin stock
-- Actualizar stock después de crear venta
-- Mostrar advertencia si el stock es bajo (< 5 unidades)
+- Mostrar solo LiveItems con `status='available'`
+- Deshabilitar items reservados o vendidos
+- Filtrar por livestream activo
+- Mostrar atributos claramente (color, talla, etc.)
+- Validar que haya cliente seleccionado antes de agregar
 
 ---
 
@@ -1038,12 +1207,20 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component')
       },
       {
-        path: 'products',
-        loadChildren: () => import('./features/products/products.routes')
+        path: 'categories',
+        loadChildren: () => import('./features/categories/categories.routes')
+      },
+      {
+        path: 'liveitems',
+        loadChildren: () => import('./features/liveitems/liveitems.routes')
       },
       {
         path: 'customers',
         loadChildren: () => import('./features/customers/customers.routes')
+      },
+      {
+        path: 'carts',
+        loadChildren: () => import('./features/carts/carts.routes')
       },
       {
         path: 'sales',
@@ -1086,6 +1263,8 @@ Copilot debe:
 - Usar **Reactive Forms** para formularios
 - Implementar **HttpClient** con interceptors
 - Respetar el contexto multi-tenant (enviar organizationId en headers)
+- **Entender el modelo de LiveItems**: items individuales, no inventario tradicional
+- **Entender carritos persistentes**: un cliente, un carrito activo que persiste entre lives
 - Usar async/await en servicios
 - Siempre tipar con interfaces
 - Implementar manejo de errores robusto
@@ -1164,12 +1343,14 @@ export class ExampleComponent {
 
 - ✅ Login y Registro con JWT
 - ✅ Dashboard con métricas básicas
-- ✅ Gestión de productos (CRUD)
+- ✅ Gestión de categorías (CRUD)
+- ✅ Gestión de atributos dinámicos por categoría
+- ✅ Gestión de LiveItems (CRUD con estados)
 - ✅ Gestión de clientes (CRUD)
-- ✅ Creación de ventas (wizard de 3 pasos)
-- ✅ Registro de pagos
-- ✅ Ver detalle de ventas
-- ✅ Cancelar ventas
+- ✅ **Carritos persistentes** (agregar items, quitar items)
+- ✅ Confirmar carritos (registrar pago → venta)
+- ✅ Ver detalle de ventas confirmadas
+- ✅ Cancelar carritos (liberar items)
 - ✅ **Modo Live** (diferenciador principal)
 - ✅ Iniciar/finalizar livestreams
 - ✅ Métricas básicas con gráficos
@@ -1247,22 +1428,24 @@ ng g c shared/components/loader --standalone
 
 ### ALTA PRIORIDAD (Semana 1-2)
 1. ✅ Auth (Login/Register)
-2. ✅ Productos (Lista + Crear)
-3. ✅ Clientes (Lista + Crear)
-4. ✅ Ventas (Crear venta básica)
-5. ✅ Modo Live (versión simple)
+2. ✅ Categorías (Lista + Crear + Atributos)
+3. ✅ LiveItems (Lista + Crear con atributos dinámicos)
+4. ✅ Clientes (Lista + Crear)
+5. ✅ Carritos (Agregar items, ver carritos activos)
+6. ✅ Modo Live (versión simple - dividido en 2 columnas)
 
 ### MEDIA PRIORIDAD (Semana 3)
-6. ✅ Registrar pagos
-7. ✅ Dashboard con métricas
-8. ✅ Ver detalle de venta
-9. ✅ Cancelar venta
+7. ✅ Confirmar carritos (registrar pago)
+8. ✅ Ver detalle de ventas
+9. ✅ Cancelar carritos
+10. ✅ Quitar items de carritos
+11. ✅ Dashboard con métricas
 
 ### BAJA PRIORIDAD (Semana 4)
-10. ⚠️ Envíos
-11. ⚠️ Livestreams (gestión completa)
-12. ⚠️ Filtros avanzados
-13. ⚠️ Gráficos detallados
+12. ⚠️ Envíos
+13. ⚠️ Livestreams (gestión completa)
+14. ⚠️ Filtros avanzados
+15. ⚠️ Gráficos detallados
 
 ---
 
@@ -1477,24 +1660,39 @@ El frontend consume estos endpoints del backend:
 - `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Usuario actual
 
-### Products
-- `GET /api/products` - Listar productos
-- `GET /api/products/:id` - Detalle producto
-- `POST /api/products` - Crear producto
-- `PUT /api/products/:id` - Actualizar producto
-- `DELETE /api/products/:id` - Eliminar (soft delete)
+### Categories
+- `GET /api/categories` - Listar categorías
+- `GET /api/categories/:id` - Ver categoría con atributos
+- `POST /api/categories` - Crear categoría
+- `PATCH /api/categories/:id` - Actualizar categoría
+- `POST /api/categories/:id/attributes` - Crear atributo
+- `POST /api/attributes/:id/values` - Agregar valor de atributo
+
+### LiveItems (⭐ Core)
+- `GET /api/liveitems` - Listar LiveItems (filtros: status, categoryId, livestreamId)
+- `GET /api/liveitems/stats` - Estadísticas de items
+- `GET /api/liveitems/:id` - Ver detalle de un item
+- `POST /api/liveitems` - Crear nuevo LiveItem
+- `PATCH /api/liveitems/:id` - Actualizar item
+- `DELETE /api/liveitems/:id` - Eliminar item
 
 ### Customers
 - `GET /api/customers` - Listar clientes
 - `GET /api/customers/:id` - Detalle cliente
 - `POST /api/customers` - Crear cliente
-- `PUT /api/customers/:id` - Actualizar cliente
+- `PATCH /api/customers/:id` - Actualizar cliente
+
+### Carts (⭐ Carritos Persistentes)
+- `GET /api/carts` - Listar carritos activos
+- `GET /api/carts/customer/:customerId` - Ver carrito de un cliente
+- `POST /api/carts/items` - Agregar item al carrito
+- `DELETE /api/carts/:cartId/items/:itemId` - Quitar item del carrito
+- `POST /api/carts/:cartId/confirm` - Confirmar carrito (cerrar venta)
+- `POST /api/carts/:cartId/cancel` - Cancelar carrito (liberar items)
 
 ### Sales
-- `GET /api/sales` - Listar ventas (con filtros)
+- `GET /api/sales` - Listar ventas (confirmadas)
 - `GET /api/sales/:id` - Detalle venta (con items, payments, shipment)
-- `POST /api/sales` - Crear venta
-- `PUT /api/sales/:id/cancel` - Cancelar venta
 
 ### Payments
 - `POST /api/payments` - Registrar pago
@@ -1506,12 +1704,37 @@ El frontend consume estos endpoints del backend:
 ### Livestreams
 - `GET /api/livestreams` - Listar livestreams
 - `POST /api/livestreams` - Iniciar livestream
-- `PUT /api/livestreams/:id/end` - Finalizar livestream
+- `POST /api/livestreams/:id/end` - Finalizar livestream
 
 ### Metrics
-- `GET /api/metrics/monthly?year=2024&month=12` - Métricas mensuales
-- `GET /api/metrics/daily?startDate=...&endDate=...` - Métricas por día
-- `GET /api/metrics/top-products?limit=10` - Top productos
+- `GET /api/metrics/dashboard` - Métricas generales
+- `GET /api/metrics/sales` - Métricas de ventas
+- `GET /api/metrics/livestreams/:id` - Métricas de un live
+
+---
+
+## 🔄 Cambios Clave del Backend Reflejados en Frontend
+
+### ❌ Eliminado (ya no existe)
+- ~~Products~~ → Reemplazado por **LiveItems**
+- ~~ProductVariants~~ → Items individuales con atributos dinámicos
+- ~~Stock tradicional~~ → Estados de LiveItems (available/reserved/sold)
+- ~~StockMovements~~ → Cambios de estado de LiveItems
+
+### ✅ Nuevo Modelo
+- **LiveItems**: Items individuales para vender (1-3 unidades típicamente)
+- **ProductCategory**: Categorías de productos (Ropa, Joyas, Maquillaje, etc.)
+- **CategoryAttribute**: Atributos dinámicos por categoría (Color, Talla, Material)
+- **AttributeValue**: Valores predefinidos para atributos tipo 'select'
+- **LiveItemAttributeValue**: Relación entre LiveItem y sus atributos
+- **Carritos Persistentes**: Sale con status='reserved' (persiste entre lives)
+
+### 🔑 Conceptos Clave para el Frontend
+1. **Items Individuales**: No hay inventario masivo, cada item es único
+2. **Carritos que Persisten**: Un cliente puede pedir en varios lives y paga todo junto
+3. **Estados de Items**: available → reserved → sold
+4. **Atributos Dinámicos**: Cada categoría define sus propios atributos
+5. **Sale = Carrito o Venta**: status='reserved' (carrito editable) vs status='confirmed' (venta cerrada)
 
 ---
 
@@ -1525,17 +1748,20 @@ El frontend consume estos endpoints del backend:
 - Implementar **error handling** global con interceptor
 - Usar **date-fns** para manejo de fechas
 - Implementar **confirmación** antes de acciones destructivas
-- El **Modo Live** debe ser extremadamente rápido (< 3 clicks para venta)
+- El **Modo Live** debe ser extremadamente rápido (< 3 clicks para agregar item a carrito)
 - Optimizar para **touch devices** (botones grandes, gestos)
 - Implementar **búsqueda con debounce** (300ms)
 - Guardar **filtros en query params** para compartir URLs
 - Los **decimales** vienen del backend como strings, convertir a number para cálculos
 - Las **fechas** vienen en formato ISO 8601, usar date-fns para formatear
 - Implementar **retry logic** en HTTP requests críticos
+- **IMPORTANTE**: Entender que Sale puede ser carrito (reserved) o venta (confirmed)
+- **IMPORTANTE**: Un cliente solo tiene 1 carrito activo a la vez
+- **IMPORTANTE**: LiveItems son únicos, no hay stock masivo
 
 ---
 
-**Versión:** 1.0 Frontend  
-**Última actualización:** Diciembre 2024  
+**Versión:** 2.0 Frontend (Actualizado con LiveItems y Carritos Persistentes)  
+**Última actualización:** Diciembre 27, 2024  
 **Framework:** Angular 17+  
-**Enfoque:** Multi-tenant SaaS para Live Commerce
+**Enfoque:** Multi-tenant SaaS para Live Shopping con items individuales

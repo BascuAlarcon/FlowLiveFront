@@ -48,6 +48,49 @@
   animation: blink 1s infinite;
 }
 
+// Botones de atributos
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-option {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+
+  &:hover:not(:disabled) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+  }
+
+  &.selected {
+    border-color: #3b82f6;
+    background: #3b82f6;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f7fafc;
+  }
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
@@ -123,7 +166,7 @@
 // Contenido principal
 .live-content {
   display: grid;
-  grid-template-columns: 1fr 450px;
+  grid-template-columns: 60% 40%;
   gap: 1.5rem;
   height: calc(100vh - 200px);
 }
@@ -219,11 +262,9 @@
   }
 }
 
-.carts-list {
-  flex: 1;
+.carts-list {  
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  display: flex; 
   gap: 1rem;
 
   &::-webkit-scrollbar {
@@ -376,6 +417,15 @@
     }
   }
 
+  &.close {
+    background: #c5c5c5;
+    color: black;
+
+    &:hover {
+      background: #c5c5c5;
+    }
+  }
+
   &.danger {
     background: #ef4444;
     color: white;
@@ -429,8 +479,7 @@
 
 .add-product-form {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  flex-direction: column; 
 }
 
 .form-group {
@@ -801,6 +850,47 @@ select.form-control {
     .add-product-section {
       order: -1;
     }
+  }
+}
+ 
+
+// Estilos para nuevo cliente form
+.new-customer-form {
+  background: #f0f9ff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid #3b82f6;
+  margin: 1rem 0;
+
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e40af;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+}
+
+// Botón para nuevo cliente
+.btn-new-customer {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
   }
 }
 

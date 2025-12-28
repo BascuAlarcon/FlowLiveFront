@@ -27,8 +27,8 @@ export class LoginComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['test@gmail.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]]
+      email: ['admin@flowlive.com', [Validators.required, Validators.email]],
+      password: ['password123', [Validators.required, Validators.minLength(6)]]
     });
   }
 

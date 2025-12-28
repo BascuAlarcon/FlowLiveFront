@@ -66,12 +66,16 @@ export enum ShipmentType {
   PICKUP = 'pickup'
 }
 
-export enum StockMovementType {
-  RESERVE = 'reserve',
-  SALE = 'sale',
-  CANCEL = 'cancel',
-  ADJUSTMENT = 'adjustment',
-  RETURN = 'return'
+export enum LiveItemStatus {
+  AVAILABLE = 'available',
+  RESERVED = 'reserved',
+  SOLD = 'sold'
+}
+
+export enum AttributeType {
+  SELECT = 'select',
+  TEXT = 'text',
+  NUMBER = 'number'
 }
 
 export enum MessageType {
@@ -82,9 +86,15 @@ export enum MessageType {
 }
 
 // Helpers para UI
+export const LIVEITEM_STATUS_LABELS: Record<LiveItemStatus, string> = {
+  [LiveItemStatus.AVAILABLE]: 'Disponible',
+  [LiveItemStatus.RESERVED]: 'Reservado',
+  [LiveItemStatus.SOLD]: 'Vendido'
+};
+
 export const SALE_STATUS_LABELS: Record<SaleStatus, string> = {
-  [SaleStatus.RESERVED]: 'Reservada',
-  [SaleStatus.CONFIRMED]: 'Confirmada',
+  [SaleStatus.RESERVED]: 'Carrito Activo',
+  [SaleStatus.CONFIRMED]: 'Venta Confirmada',
   [SaleStatus.CANCELLED]: 'Cancelada'
 };
 
@@ -109,6 +119,12 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
 };
 
 // Colores para badges
+export const LIVEITEM_STATUS_COLORS: Record<LiveItemStatus, string> = {
+  [LiveItemStatus.AVAILABLE]: 'success',
+  [LiveItemStatus.RESERVED]: 'warning',
+  [LiveItemStatus.SOLD]: 'secondary'
+};
+
 export const SALE_STATUS_COLORS: Record<SaleStatus, string> = {
   [SaleStatus.RESERVED]: 'warning',
   [SaleStatus.CONFIRMED]: 'success',
