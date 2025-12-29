@@ -1,0 +1,208 @@
+<div class="container mt-2">
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+      <h1 class="mb-1 page-title">Procesos de Selección</h1>
+      <p class="subtitle">Gestiona tus procesos de selección activos y revisa el historial de proceso terminados.</p>
+    </div>
+
+    <div
+      class="col-12 col-md-6 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-end gap-3 mb-3 mb-md-0">
+      <button  class="btn btn-primary col-12 col-md-auto">
+        Nuevo proceso
+      </button>
+
+      <button (click)="toggleFiltros()" class="btn btn-filtrar col-12 col-md-auto">
+        <img src="assets/img/icon-filtrar.svg" alt="">
+        Filtrar
+      </button>
+    </div>
+
+  </div>
+
+  <mat-tab-group class="tab-listado-seleccion" [(selectedIndex)]="mainTabIndex" [mat-stretch-tabs]="false">
+    <mat-tab [label]="MAIN_TABS.SOLICITUDES_SELECCION.label">
+      <div class="switch-container mt-1">
+        <button class="switch-btn switch-btn-left" [class.active]="subTab === 'otic'"
+          [class.padding-left]="subTab === 'otic'" (click)="selectSubTab('otic')">
+          {{SUB_TABS.OTIC.label}}
+        </button>
+        <button class="switch-btn switch-btn-right" [class.active]="subTab === 'futuro'"
+          [class.padding-right]="subTab === 'futuro'" (click)="selectSubTab('futuro')">
+          {{SUB_TABS.FUTURO.label}}
+        </button>
+      </div>
+    </mat-tab>
+    <mat-tab [label]="MAIN_TABS.MIS_SOLICITUDES.label">
+    </mat-tab>
+  </mat-tab-group>
+
+
+
+
+  <!-- Filtros -->
+  <div class="row g-2 mb-3 align-items-center">
+
+    <div class="col-12 col-md">
+      <div class="position-relative">
+        <input class="form-control pe-5" type="text" placeholder="Buscar por Cargo" style="height: 40px;" />
+        <img src="assets/img/icon-lupa.svg" alt="" class="position-absolute end-0 top-50 translate-middle-y me-3"
+          style="width: 16px;">
+      </div>
+    </div>
+
+    <div class="col-12 col-md-auto" [ngClass]="{ 'd-none': _isFuturoTab }">
+      <select *appHasRole="[UserRole.ADMIN, UserRole.EJECUTIVO_COMERCIAL, UserRole.SUBGERENTE_GESTION_PERSONAS]"
+        class="form-select" style="height: 40px;">
+        <option selected disabled>Seleccione Empresa</option>
+        @for (item of empresas; track $index) {
+        <option [value]="item.emprCodigo">{{ item.empNombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-12 col-md-auto" [ngClass]="{
+    'd-none d-md-block invisible': _isFuturoTab
+  }">
+      <select *appHasRole="[UserRole.ADMIN, UserRole.SUBGERENTE_GESTION_PERSONAS]" class="form-select"
+        style="height: 40px;">
+        <option selected disabled>Tipo proceso</option>
+        @for (item of tiposProcesos; track $index) {
+        <option [value]="item.tproId">{{ item.tproNombre }}</option>
+        }
+      </select>
+    </div>
+
+
+    <div class="col-12 col-md-auto">
+      <select class="form-select" style="height: 40px;">
+        <option selected disabled>Seleccione Responsable</option>
+      </select>
+    </div>
+
+    <div class="col-12 col-md-auto">
+      <select class="form-select" style="height: 40px;">
+        <option selected disabled>Estado</option>
+      </select>
+    </div>
+
+    <div class="col-12 col-md-auto">
+      <input type="date" class="form-control ps-3" value="2024-10-25" style="height: 40px;" />
+    </div>
+
+  </div>
+
+  <!-- filtros "expandibles" -->
+  <div class="card card-filtros-expandibles" *ngIf="filtrosAbiertos" @expandCollapse>
+    <div class="row">
+      <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <input class="form-control input-field" type="text" placeholder="Ingrese nombre Solicitante" />
+      </div>
+      <div class="col-12 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Urgencia</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Zona</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Oficina</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <select style="height: 40px;" class="form-select">
+          <option>Gerencia</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">
+          N°
+        </th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.numero }}</td>
+      </ng-container>
+      <ng-container matColumnDef="tipoProceso">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">
+          Tipo Proceso
+        </th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.tipoProceso }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="nombreEmpresa">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">
+          Nombre Empresa
+        </th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.nombreEmpresa }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cargo">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">
+          Cargo
+        </th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.cargo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="solicitante">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">
+          Solicitante
+        </th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.solicitante }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">Estado</th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.estado }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaSolicitud">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">Fecha Solicitud</th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.fechaSolicitud
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="responsable">
+        <th mat-header-cell *matHeaderCellDef class="header-cell">Responsable</th>
+        <td mat-cell *matCellDef="let element" style=" font-size: 14px; font-weight: 400;">{{ element.responsable }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="urgencia">
+        <th mat-header-cell *matHeaderCellDef class="header-cell" style="text-align: center;">Urgencia</th>
+        <td mat-cell *matCellDef="let element" style="font-size: 14px; font-weight: 400; text-align: center;">
+          <span class="urgencia-indicator" [style.background-color]="getUrgenciaColor(element.urgencia)"></span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="opciones">
+        <th mat-header-cell *matHeaderCellDef class="header-cell" style=" text-align: center;">Opciones</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <button mat-icon-button [matMenuTriggerFor]="menu" class="btn border-0 bg-transparent">
+            <img src="assets/img/opciones-grid.svg" alt="Opciones">
+          </button>
+          <mat-menu #menu="matMenu">
+            <button (click)="navegarDetalleProceso(element.id)" mat-menu-item>Ver proceso</button>
+            <button (click)="navegarCandidatos()" mat-menu-item>Ver candidatos</button> 
+            <button mat-menu-item>Cancelar proceso</button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="_displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: _displayedColumns"></tr>
+    </table>
+  </div>
+  <!-- Paginador de Angular Material -->
+  <app-custom-paginator [dataSource]="dataSource" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
+  </app-custom-paginator>
+</div>

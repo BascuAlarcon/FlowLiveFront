@@ -8,62 +8,62 @@
     <div class="row">
       <div class="col-12">
  
-        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+        <div *appHasRole="[UserRole.ADMIN, UserRole.OWNER]" class="cc-container-btn-sidebar">
           <button
             type="button"
             class="cc-btn-sidebar"
             routerLink="/affiliatons"
-            (click)="selectOptionSidebar('HomeProcesosSeleccion')"
-            (mouseenter)="setHover('HomeProcesosSeleccion', true)"
-            (mouseleave)="setHover('HomeProcesosSeleccion', false)"
-            [ngClass]="{ selected: isActive('HomeProcesosSeleccion') && !sidebarComprimido }"
+            (click)="selectOptionSidebar('Informes')"
+            (mouseenter)="setHover('Informes', true)"
+            (mouseleave)="setHover('Informes', false)"
+            [ngClass]="{ selected: isActive('Informes') && !sidebarComprimido }"
           >
             <img 
               height="40px" width="40px"
-              src="/assets/img/icon-sidebar-home{{ (isActive('HomeProcesosSeleccion') || isHover('HomeProcesosSeleccion')) ? '-active' : '' }}.svg"
-              [ngClass]="{ selected: isActive('HomeProcesosSeleccion') && sidebarComprimido }"
+              src="/assets/img/icon-sidebar-home{{ (isActive('Informes') || isHover('Informes')) ? '-active' : '' }}.svg"
+              [ngClass]="{ selected: isActive('Informes') && sidebarComprimido }"
             />
-            Inicio (métricas)
+            Informes
           </button>
         </div>
 
 
-        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+        <div *appHasRole="[UserRole.ADMIN, UserRole.OWNER]" class="cc-container-btn-sidebar">
           <button
             type="button"
             class="cc-btn-sidebar"
             routerLink="/affiliatons"
-            (click)="selectOptionSidebar(getProcesosSeleccionKey())"
-            (mouseenter)="setHover(getProcesosSeleccionKey(), true)"
-            (mouseleave)="setHover(getProcesosSeleccionKey(), false)"
-            [ngClass]="{ selected: isActive(getProcesosSeleccionKey()) && !sidebarComprimido }"
+            (click)="selectOptionSidebar('Lives')"
+            (mouseenter)="setHover('Lives', true)"
+            (mouseleave)="setHover('Lives', false)"
+            [ngClass]="{ selected: isActive('Lives') && !sidebarComprimido }"
           >
             <img 
               height="40px" width="40px"
-              [src]="getProcesosSeleccionIcon(isActive(getProcesosSeleccionKey()) || isHover(getProcesosSeleccionKey()))"
-              [ngClass]="{ selected: isActive(getProcesosSeleccionKey()) && sidebarComprimido }"
+              src="/assets/img/icon-persona-plus{{ (isActive('Lives') || isHover('Lives')) ? '-active' : '' }}.svg"
+              [ngClass]="{ selected: isActive('Lives') && sidebarComprimido }"
             />
-            Live
+            Lives
           </button>
           
         </div> 
 
-        <div *appHasRole="UserRole.ADMIN" class="cc-container-btn-sidebar">
+        <div *appHasRole="[UserRole.ADMIN, UserRole.OWNER]" class="cc-container-btn-sidebar">
           <button
             type="button"
             class="cc-btn-sidebar"
             routerLink="/affiliatons"
-            (click)="selectOptionSidebar('SolicitudesIngreso')"
-            (mouseenter)="setHover('SolicitudesIngreso', true)"
-            (mouseleave)="setHover('SolicitudesIngreso', false)"
-            [ngClass]="{ selected: isActive('SolicitudesIngreso') && !sidebarComprimido }"
+            (click)="selectOptionSidebar('Mantenedores')"
+            (mouseenter)="setHover('Mantenedores', true)"
+            (mouseleave)="setHover('Mantenedores', false)"
+            [ngClass]="{ selected: isActive('Mantenedores') && !sidebarComprimido }"
           >
             <img 
               height="40px" width="40px"
-              src="/assets/img/icon-persona-plus{{ (isActive('SolicitudesIngreso') || isHover('SolicitudesIngreso')) ? '-active' : '' }}.svg"
-              [ngClass]="{ selected: isActive('SolicitudesIngreso') && sidebarComprimido }"
+              src="/assets/img/icon-persona-plus{{ (isActive('Mantenedores') || isHover('Mantenedores')) ? '-active' : '' }}.svg"
+              [ngClass]="{ selected: isActive('Mantenedores') && sidebarComprimido }"
             />
-            Administración de Usuarios
+            Administración del Sistema
           </button>
         </div> 
         

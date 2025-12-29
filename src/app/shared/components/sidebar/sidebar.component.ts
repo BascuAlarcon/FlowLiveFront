@@ -28,11 +28,9 @@ export class SidebarComponent {
   
   private readonly menuOptions: MenuOption[] = [
     { key: 'home', route: '/' },
-    { key: 'ProcesosSeleccion', route: '/procesos-seleccion' },
-    { key: 'SolicitudesIngreso', route: '/solicitudes-ingreso' },
-    { key: 'SolicitudReclutamientoSeleccion', route: '/procesos-seleccion' },
-    { key: 'HomeProcesosSeleccion', route: '/home-procesos-seleccion' },
-    { key: 'IngresoCandidatos', route: '/portal-ingreso-candidatos/login' },
+    { key: 'Informes', route: '/dashboard' },
+    { key: 'Lives', route: '/livestreams/listar' },
+    { key: 'Mantenedores', route: '/mantenedores' }, 
   ];
   
   activeStates: Record<string, boolean> = {};
@@ -49,6 +47,7 @@ export class SidebarComponent {
   }
 
   async ngOnInit() {
+    
     const user = this._userContext.currentUser?.trabajadorData || null;
     this.isGuest = false; //user?.user?.usGuest ?? false;
     this.definirSeleccionActualSidebar();
@@ -159,40 +158,5 @@ export class SidebarComponent {
 
   setHover(key: string, state: boolean): void {
     this.hoverStates[key] = state;
-  }
-
-  /**
-   * Obtiene el texto del botón fusionado según el rol del usuario
-   */
-  getProcesosSeleccionText(): string {
-    const userRole = this.authService.getUserRole();
-    if (userRole === UserRole.JEFATURA_OTIC || userRole === UserRole.EJECUTIVO_COMERCIAL) {
-      return 'Procesos de Selección';
-    }
-    return 'Selección Colaboradores';
-  }
-
-  /**
-   * Obtiene la ruta del icono según el rol del usuario
-   */
-  getProcesosSeleccionIcon(isActiveOrHover: boolean): string {
-    const userRole = this.authService.getUserRole();
-    const suffix = isActiveOrHover ? '-active' : '';
-    
-    if (userRole === UserRole.JEFATURA_OTIC || userRole === UserRole.EJECUTIVO_COMERCIAL) {
-      return `/assets/img/icon-persona-plus${suffix}.svg`;
-    }
-    return `/assets/img/icon-sidebar-seleccion-colaboradores${suffix}.svg`;
-  }
-
-  /**
-   * Obtiene la clave de la opción a usar para el botón fusionado
-   */
-  getProcesosSeleccionKey(): string {
-    const userRole = this.authService.getUserRole();
-    if (userRole === UserRole.JEFATURA_OTIC || userRole === UserRole.EJECUTIVO_COMERCIAL) {
-      return 'ProcesosSeleccion';
-    }
-    return 'SolicitudReclutamientoSeleccion';
-  }
+  } 
 }

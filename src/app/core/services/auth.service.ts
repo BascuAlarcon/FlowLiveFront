@@ -53,6 +53,7 @@ export class AuthService {
    */
   hasRole(role: UserRole | UserRole[]): boolean {
     const userRole = this.getUserRole();
+    console.log("AuthService - User Role:", userRole);
     return Array.isArray(role) ? role.includes(userRole) : role === userRole;
   }
 

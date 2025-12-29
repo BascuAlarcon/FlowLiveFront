@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 export const LIVESTREAMS_ROUTES: Routes = [
   {
-    path: '',
-    loadComponent: () => import('./livestream-list.component').then(m => m.LivestreamListComponent)
+    path: 'listar',
+    loadComponent: () => import('./listar-livestreams/listar-livestreams.component').then(m => m.ListarLivestreamsComponent)
   }
 ];

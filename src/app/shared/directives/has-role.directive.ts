@@ -30,7 +30,10 @@ export class HasRoleDirective implements OnInit {
   }
 
   private updateView(): void {
+    console.log('HasRoleDirective - appHasRole:', this.appHasRole);
     const hasAccess = this.authService.hasRole(this.appHasRole);
+    console.log('HasRoleDirective - hasAccess:', hasAccess);
+
     
     if (hasAccess) {
       // Mostrar el elemento
