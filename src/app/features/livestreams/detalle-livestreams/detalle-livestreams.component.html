@@ -1,1 +1,91 @@
-<p>detalle-livestreams works!</p>
+<div class="container mt-4 crear-propuesta-header" style="max-width: 90%;">
+    <div class="row mb-2">
+        <div class="col-12">
+            <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+            <h1 class="mb-1 page-title">Crear Propuesta</h1>
+            <p class="subtitle">Completa la información requerida para crear la propuesta.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container main-layout" style="display: flex; max-width: 90%;">
+ 
+    <div class="container content-section" style="max-width: 75%;">  
+        <div class="card">
+            <div class="tabs">
+                <button class="tab-button" [class.active]="activeTab === 'IDENTIFICACION'" (click)="setActiveTab('IDENTIFICACION')">{{MAIN_TABS.IDENTIFICACION.label}}</button>
+                <button class="tab-button" [class.active]="activeTab === 'COSTEO'" (click)="setActiveTab('COSTEO')">{{MAIN_TABS.COSTEO.label}}</button>
+                <button class="tab-button" [class.active]="activeTab === 'GESTION'" (click)="setActiveTab('GESTION')">{{MAIN_TABS.GESTION.label}}</button>
+            </div>
+            
+            <!-- Datos Empresa - Editable (Solo en IDENTIFICACION) -->
+            <div class="shared-info datos-empresa-editable" style="display: flex; flex-direction: column; padding-top: 1em;" *ngIf="activeTab === 'IDENTIFICACION'">
+                <h2 class="card-title" style="padding: 0;">Datos Empresa</h2>
+                <div class="datos-empresa-inputs" style="display: flex; width: 100%; padding-left: 1em; gap: 2em;">
+                    <div class="empresa-field" style="flex: 1; min-width: 220px;">
+                        <label style="color: #1D2345; font-weight: 600;">RUT / ID Empresa *</label>
+                        <input type="text" class="form-control" placeholder="Ingrese RUT / ID Empresa" style="margin-top: 0.25em;" />
+                    </div>
+                    <div class="empresa-field" style="flex: 2; min-width: 320px;">
+                        <label style="color: #1D2345; font-weight: 600;">Nombre o Razón Social *</label>
+                        <select class="form-control" style="margin-top: 0.25em;">
+                            <option selected disabled>Seleccione Nombre o Razón Social</option>
+                            <!-- Opciones dinámicas aquí -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos Empresa - Solo Lectura (Para COSTEO y GESTION) -->
+            <div class="shared-info datos-empresa-readonly" style="display: flex; flex-direction: column; padding-top: 1em;" *ngIf="activeTab !== 'IDENTIFICACION'">
+                <h2 class="card-title" style="padding: 0;">Datos Empresa</h2>
+                <div class="datos-empresa-display" style="display: flex; width: 100%; gap: 2em; align-items: center;">
+                    <div class="empresa-info" style="flex: 1; min-width: 220px;">
+                        <span style="color: #6C757D; font-size: 0.875rem;">RUT / ID Empresa:</span>
+                        <span style="color: #1D2345; font-weight: 600; margin-left: 0.5em;">111111-1</span>
+                    </div>
+                    <div class="empresa-info" style="flex: 2; min-width: 320px;">
+                        <span style="color: #6C757D; font-size: 0.875rem;">Nombre o Razón Social:</span>
+                        <span style="color: #1D2345; font-weight: 600; margin-left: 0.5em;">Nombre o Razón Social</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab-content" *ngIf="activeTab === 'IDENTIFICACION'">
+            <app-tab-identificacion class="tab-container"></app-tab-identificacion>
+        </div>
+
+        <div class="tab-content" *ngIf="activeTab === 'COSTEO'">
+            <app-tab-costeo class="tab-container"></app-tab-costeo>
+        </div>
+
+        <div class="tab-content" *ngIf="activeTab === 'GESTION'">
+            <app-tab-gestion class="tab-container"></app-tab-gestion>
+        </div> 
+     
+        <div class="button-group">
+            <div class="row">
+                <div class="col-3">
+                <button type="button" class="btn btn-link" (click)="onVolver()">
+                    <span class="icon">&#x276E;</span> Volver
+                </button>
+                </div>
+                <div class="col-9" style="gap: 1em; display: flex; justify-content: end;">
+                <button type="button" class="btn btn-outline-primary">Guardar y salir</button>
+
+                <!-- @if (activeTab === 'datosGenerales' || !tipoProcesoConfirmado) { -->
+                <button type="submit" class="btn btn-primary">Guardar y continuar</button>
+                <!-- } -->
+
+                @if (activeTab === 'requerimientosCargo') {
+                <button type="submit" class="btn btn-primary">Solicitar</button>
+                }
+
+                </div>
+            </div> 
+        </div>
+    </div>
+    <app-indices-proyecto class="container sidebar-section" style="max-width: 25%;"></app-indices-proyecto>
+</div>

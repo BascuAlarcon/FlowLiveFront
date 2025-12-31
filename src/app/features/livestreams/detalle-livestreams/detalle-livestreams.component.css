@@ -1,0 +1,141 @@
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #ABA7AF;
+}
+
+.tab-button.active {
+  border-bottom: 2px solid #173DDC;
+  font-weight: bold;
+  color: #173DDC;
+}
+
+.tab-content {
+  padding-top: 0px; 
+  padding-bottom: 30px; 
+  margin-top: -1px;
+}
+
+.tab-container{
+
+    flex-direction: column; 
+    display: flex;
+}
+
+.btn-link {
+  text-decoration: none;
+  color: #173DDC; 
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+  color: #0056b3;
+}
+
+/* Responsividad para tablets */
+@media (max-width: 992px) {
+  .main-layout {
+    flex-direction: column !important;
+  }
+
+  .content-section {
+    max-width: 100% !important;
+  }
+
+  .sidebar-section {
+    max-width: 100% !important;
+    margin-top: 2em;
+  }
+
+  .datos-empresa-inputs {
+    flex-direction: column !important;
+    gap: 1em !important;
+  }
+
+  .empresa-field {
+    min-width: 100% !important;
+  }
+
+  .datos-empresa-display {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1em !important;
+  }
+
+  .empresa-info {
+    min-width: 100% !important;
+  }
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+  .crear-propuesta-header {
+    max-width: 95% !important;
+  }
+
+  .main-layout {
+    max-width: 95% !important;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-button {
+    white-space: nowrap;
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  .button-group .row {
+    flex-direction: column;
+  }
+
+  .button-group .col-3,
+  .button-group .col-9 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .button-group .col-9 {
+    margin-top: 1em;
+  }
+
+  .button-group .col-9 > div {
+    flex-direction: column !important;
+  }
+
+  .button-group button {
+    width: 100%;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* Responsividad para móviles pequeños */
+@media (max-width: 576px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+}

@@ -459,7 +459,7 @@ export class ListarLivestreamsComponent {
 
   navegarDetalleProceso(id: number) {
     console.log(`Navegar al detalle del proceso con ID: ${id}`);
-    this._router.navigate([`/detalle-proceso-seleccion`, id]);
+    this._router.navigate([`/livestreams/detalle`, id]);
   }
 
   navegarCandidatos() {

@@ -1,0 +1,75 @@
+.row{
+    padding-left: 1em;
+}
+
+/* Responsividad para tablets y móviles */
+@media (max-width: 768px) {
+    .row {
+        padding-left: 0.5em;
+    }
+
+    .row.mb-2 {
+        margin-bottom: 1rem !important;
+    }
+
+    .col-md-6,
+    .col-md-8,
+    .col-md-4,
+    .col-md-12 {
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+    }
+}
+
+/* Responsividad para móviles pequeños */
+@media (max-width: 576px) {
+    .row {
+        padding-left: 0.25em;
+    }
+
+    .col-md-6,
+    .col-md-8,
+    .col-md-4,
+    .col-md-12 {
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+    }
+}

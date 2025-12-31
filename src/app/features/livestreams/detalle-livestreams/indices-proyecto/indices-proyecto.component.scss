@@ -1,0 +1,284 @@
+/* Responsividad para tablets y móviles */
+@media (max-width: 992px) {
+    /* En tablets/móviles, el componente se muestra debajo del contenido principal (ya manejado por el componente padre) */
+    .card {
+        padding: 12px !important;
+    }
+
+    .valor-proyecto-header,
+    .costos-header,
+    .margen-header {
+        margin-bottom: 0.75em;
+    }
+
+    .impuesto-input,
+    .ganancia-input,
+    .descuento-input {
+        width: 80px;
+    }
+
+    .venta-box {
+        padding: 0.75em;
+    }
+}
+
+/* Responsividad para pantallas medianas */
+@media (max-width: 900px) {
+    .card {
+        padding: 10px !important;
+    }
+    .valor-proyecto-header,
+    .costos-header,
+    .margen-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5em;
+    }
+    .icon-help {
+        align-self: flex-end;
+        margin-top: 0.5em;
+    }
+    .venta-box {
+        padding: 0.5em;
+    }
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+    .card {
+        padding: 10px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    h5,
+    .valor-proyecto-titulo,
+    .costos-titulo,
+    .margen-titulo {
+        font-size: 16px !important;
+    }
+
+    .label-valor,
+    .label-costos,
+    .label-margen,
+    .venta-label {
+        font-size: 13px !important;
+    }
+
+    .valor,
+    .costos,
+    .margen,
+    .venta-valor {
+        font-size: 13px !important;
+    }
+
+    .impuesto-input,
+    .ganancia-input,
+    .descuento-input {
+        width: 75px;
+        font-size: 13px;
+    }
+}
+
+/* Responsividad para móviles pequeños */
+@media (max-width: 600px) {
+    .impuesto-row,
+    .valor-row,
+    .ganancia-row,
+    .descuento-row,
+    .venta-row,
+    .costos-row,
+    .margen-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3em;
+    }
+    .impuesto-input,
+    .ganancia-input,
+    .descuento-input {
+        width: 100%;
+        min-width: 0;
+        margin-top: 0.3em;
+    }
+    .venta-box {
+        margin-top: 0.5em;
+        padding: 0.7em;
+    }
+    .card {
+        padding: 8px !important;
+    }
+    h5,
+    .valor-proyecto-titulo,
+    .costos-titulo,
+    .margen-titulo {
+        font-size: 15px !important;
+    }
+    .label-valor,
+    .label-costos,
+    .label-margen,
+    .venta-label {
+        font-size: 12px !important;
+    }
+    .valor,
+    .costos,
+    .margen,
+    .venta-valor {
+        font-size: 12px !important;
+    }
+}
+
+.impuesto-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.impuesto-input {
+    width: 75px;
+    text-align: right;
+    background-color: hwb(0 100% 0%);
+    border: 1px solid #E0E0E0;
+}
+
+.valor-proyecto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.1em;
+}
+.valor-proyecto-titulo {
+    margin: 0;
+    color: #1D2345;
+    font-weight: 600;
+    font-size: 16px;
+}
+.icon-help {
+    color: #808AA8;
+    cursor: pointer;
+    font-size: 18px;
+}
+.valor-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.1em;
+}
+.label-valor {
+    color: #808AA8;
+    font-size: 14px;
+}
+.valor {
+    color: #1D2345;
+    font-weight: 500;
+}
+.ganancia-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.1em;
+}
+.ganancia-input {
+    width: 75px;
+    text-align: right;
+    background-color: #ffffff;
+    border: 1px solid #E0E0E0;
+}
+.descuento-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+.descuento-input {
+    width: 75px;
+    text-align: right;
+    background-color: #ffffff;
+    border: 1px solid #E0E0E0;
+}
+.venta-box {
+    background-color: #C0D9FF;
+    padding: 5px;
+    border-radius: 4px;
+    margin-top: 0.1em;
+}
+.venta-row {
+    display: flex;
+    justify-content: space-between;
+}
+.venta-label {
+    color: #1D2345;
+    font-weight: bold;
+    font-size: 14px;
+}
+.venta-valor {
+    color: #1D2345;
+    font-weight: bold;
+}
+.costos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.1em;
+}
+.costos-titulo {
+    margin: 0;
+    color: #1D2345;
+    font-weight: 600;
+    font-size: 16px;
+}
+.costos-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.1em;
+}
+.label-costos {
+    color: #808AA8;
+    font-size: 14px;
+}
+.costos {
+    color: #1D2345;
+    font-weight: 500;
+}
+.margen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.1em;
+}
+.margen-titulo {
+    margin: 0;
+    color: #1D2345;
+    font-weight: 600;
+    font-size: 16px;
+}
+.margen-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.1em;
+}
+.label-margen {
+    color: #173DDC;
+    font-weight: 700;
+    font-size: 14px;
+}
+.margen {
+    color: #173DDC;
+    font-weight: 700;
+}
+.card{
+    padding: 15px !important;
+}
+
+.card input[type=text]{
+    padding: 0 !important;
+    padding-right: 5px !important;
+    height: 28px;
+    width: 25%;
+}
+
+h5{
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.card input[type=text]{
+    height: 26px !important;
+}
