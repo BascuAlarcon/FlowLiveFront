@@ -88,4 +88,30 @@ export class UserService {
       data,
     );
   }
+
+  // ============ FlowLive API Methods ============
+
+  /**
+   * Obtiene la lista de usuarios
+   */
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/users`);
+  }
+
+  /**
+   * Obtiene un usuario por ID
+   * @param id - ID del usuario
+   */
+  getUserById(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/users/${id}`);
+  }
+
+  /**
+   * Actualiza un usuario
+   * @param id - ID del usuario
+   * @param data - Datos a actualizar (name, email)
+   */
+  updateUser(id: string, data: { name?: string; email?: string }): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrl}/users/${id}`, data);
+  }
 }

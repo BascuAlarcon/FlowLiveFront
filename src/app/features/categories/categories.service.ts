@@ -54,7 +54,7 @@ export class CategoriesService {
    * Actualizar una categoría
    */
   update(id: string, category: UpdateCategoryDto): Observable<ProductCategory> {
-    return this.http.patch<ProductCategory>(`${this.apiUrl}/${id}`, category);
+    return this.http.put<ProductCategory>(`${this.apiUrl}/${id}`, category);
   }
 
   /**

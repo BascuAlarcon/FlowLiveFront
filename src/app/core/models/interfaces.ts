@@ -152,6 +152,18 @@ export interface Customer {
 }
 
 // Livestream
+export interface LivestreamStats {
+  totalSales: number;
+  confirmedSales: number;
+  pendingSales: number;
+  cancelledSales: number;
+  totalRevenue: number;
+  totalUnitsSold: number;
+  averageTicket: number;
+  durationMinutes: number;
+  isActive: boolean;
+}
+
 export interface Livestream {
   id: string;
   organizationId: string;
@@ -164,6 +176,7 @@ export interface Livestream {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  stats?: LivestreamStats;
 }
 
 // Sale (Carrito/Venta)

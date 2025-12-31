@@ -6,6 +6,8 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { UserRole } from '@core/constants/enums';
 import { AuthService } from '@core/services/auth.service';
+import { LivestreamsService } from '../livestreams.service';
+import { Livestream } from '@core/models/interfaces';
 import { BreadcrumbComponent, BreadcrumbItem } from '@shared/components/breadcrumb/breadcrumb.component';
 import { CustomPaginatorComponent } from '@shared/components/custom-paginator/custom-paginator.component';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -105,11 +107,7 @@ export class ListarLivestreamsComponent {
   private spinner = inject(NgxSpinnerService);
   private authService = inject(AuthService);
   private readonly _router = inject(Router);
-  
-  // Servicios comentados - datos en duro por ahora
-  // private solicitudesService = inject(SolicitudesService);
-  // private candidatosService = inject(CandidatosService);
-  // private readonly comunesService = inject(ComunesService);
+  private livestreamsService = inject(LivestreamsService);
 
   get _isFuturoTab(): boolean {
     return this.subTab === this.SUB_TABS.FUTURO.value;
@@ -154,8 +152,67 @@ export class ListarLivestreamsComponent {
   }
 
   async init() {
-    // Datos en duro - reemplazar cuando los servicios estén disponibles
-    this.cargarDatosMock();
+    try {
+      const response: any = await this.livestreamsService.getAll().toPromise();
+      const livestreams = response?.data || response || [];
+      this.cargarLivestreams(livestreams);
+    } catch (error) {
+      console.error('Error al cargar livestreams:', error);
+      this.toastr.error('No se pudieron cargar los livestreams', 'Error');
+      // Cargar datos mock como fallback
+      this.cargarDatosMock();
+    }
+  }
+
+  cargarLivestreams(livestreams: Livestream[]) {
+    this.dataSource.data = livestreams.map((livestream, index) => {
+      const stats = livestream.stats;
+      const isActive = stats?.isActive ?? !livestream.endedAt;
+      const totalRevenue = stats?.totalRevenue || livestream.totalSalesAmount || 0;
+      const confirmedRevenue = stats ? (stats.confirmedSales / (stats.totalSales || 1)) * totalRevenue : 0;
+      const pendingRevenue = totalRevenue - confirmedRevenue;
+      
+      return {
+        id: index + 1,
+        numero: index + 1,
+        nombreProyecto: livestream.title,
+        tipoProceso: 'Livestream',
+        nombreEmpresa: this.formatPlatform(livestream.platform),
+        cargo: stats ? `${stats.totalUnitsSold} unidades vendidas` : '-',
+        tipoServicio: 'Transmisión en vivo',
+        fechaInicio: new Date(livestream.startedAt).toLocaleDateString('es-CL'),
+        fechaFin: livestream.endedAt ? new Date(livestream.endedAt).toLocaleDateString('es-CL') : 'En curso',
+        montoTotal: totalRevenue,
+        facturado: Math.round(confirmedRevenue),
+        porFacturar: Math.round(pendingRevenue),
+        estado: isActive ? 'En Progreso' : 'Finalizado',
+        fechaSolicitud: new Date(livestream.createdAt).toLocaleDateString('es-CL'),
+        responsable: this.truncateId(livestream.createdBy),
+        urgencia: isActive ? 'Alta' : 'Baja',
+        expanded: false,
+        tipoVenta: 'En Vivo',
+        tipoFinanciamiento: stats ? `${stats.totalSales} ventas` : '-',
+        contrato: stats ? `Ticket promedio: ${this.formatearMonto(stats.averageTicket)}` : '-',
+        margen: stats && stats.durationMinutes ? Math.round(stats.durationMinutes / 60) : 0,
+        fechaTerminoPropuesta: stats ? `Duración: ${Math.round(stats.durationMinutes / 60)}h ${stats.durationMinutes % 60}min` : '-',
+        solicitante: `Espectadores: ${livestream.viewerCount || 0}`
+      };
+    });
+  }
+
+  private formatPlatform(platform: string): string {
+    const platforms: { [key: string]: string } = {
+      'instagram': 'Instagram',
+      'facebook': 'Facebook',
+      'youtube': 'YouTube',
+      'tiktok': 'TikTok',
+      'twitch': 'Twitch'
+    };
+    return platforms[platform.toLowerCase()] || platform;
+  }
+
+  private truncateId(id: string): string {
+    return id.length > 10 ? `${id.substring(0, 8)}...` : id;
   }
 
   cargarDatosMock() {

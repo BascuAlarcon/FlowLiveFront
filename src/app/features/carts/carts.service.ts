@@ -51,8 +51,8 @@ export class CartsService {
    * - LiveItems status: reserved → sold
    * - Ya no se puede editar
    */
-  confirmCart(cartId: string): Observable<Sale> {
-    return this.http.post<Sale>(`${this.apiUrl}/${cartId}/confirm`, {});
+  confirmCart(cartId: string, data?: { paymentMethod?: string; paymentReference?: string; notes?: string }): Observable<Sale> {
+    return this.http.post<Sale>(`${this.apiUrl}/${cartId}/confirm`, data || {});
   }
 
   /**

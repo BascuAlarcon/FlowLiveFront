@@ -1,0 +1,1247 @@
+{
+  "info": {
+    "name": "FlowLive API",
+    "description": "API completa para FlowLive - Live Commerce SaaS Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "flowlive-api-collection",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "organizationId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "auth": {
+        "type": "noauth"
+      },
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@flowlive.com\",\n  \"password\": \"password123\",\n  \"name\": \"Admin User\",\n  \"organizationName\": \"Mi Tienda Live\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registrar nuevo usuario y organización"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "    console.log('Token guardado:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@flowlive.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Iniciar sesión y obtener token JWT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Organizations",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations"]
+            }
+          }
+        },
+        {
+          "name": "Get Organization by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{organizationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi Tienda Actualizada\",\n  \"plan\": \"pro\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{organizationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuario Actualizado\",\n  \"email\": \"usuario@flowlive.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "LiveItems",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get LiveItems",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/liveitems?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "livestreamId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "available",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Obtiene lista de items con paginación y filtros opcionales"
+          }
+        },
+        {
+          "name": "Get LiveItems Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", "stats"]
+            },
+            "description": "Obtiene estadísticas de items (total, disponibles, reservados, vendidos)"
+          }
+        },
+        {
+          "name": "Get LiveItem by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", ":id"]
+            },
+            "description": "Obtiene un item específico con sus atributos"
+          }
+        },
+        {
+          "name": "Create LiveItem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"category_id_aqui\",\n  \"livestreamId\": \"livestream_id_aqui\",\n  \"price\": 25000,\n  \"quantity\": 1,\n  \"imageUrl\": \"https://ejemplo.com/polera.jpg\",\n  \"notes\": \"Polera roja talla M\",\n  \"attributes\": [\n    {\n      \"attributeValueId\": \"color_rojo_id\"\n    },\n    {\n      \"attributeValueId\": \"talla_m_id\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/liveitems",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems"]
+            },
+            "description": "Crea un nuevo item individual para el live"
+          }
+        },
+        {
+          "name": "Update LiveItem",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 23000,\n  \"notes\": \"Precio actualizado\",\n  \"status\": \"available\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", ":id"]
+            },
+            "description": "Actualiza precio, notas o estado de un item"
+          }
+        },
+        {
+          "name": "Delete LiveItem",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", ":id"]
+            },
+            "description": "Elimina un item (solo si está disponible)"
+          }
+        },
+        {
+          "name": "Add Attribute to LiveItem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributeValueId\": \"nuevo_valor_id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/:id/attributes",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", ":id", "attributes"]
+            },
+            "description": "Agrega un atributo adicional al item"
+          }
+        },
+        {
+          "name": "Remove Attribute from LiveItem",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/liveitems/:id/attributes/:attributeId",
+              "host": ["{{baseUrl}}"],
+              "path": ["liveitems", ":id", "attributes", ":attributeId"]
+            },
+            "description": "Elimina un atributo del item"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"María González\",\n  \"username\": \"@maria_ig\",\n  \"contact\": \"+56912345678\",\n  \"notes\": \"Cliente frecuente\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"María González Silva\",\n  \"contact\": \"+56987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Livestreams",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Livestreams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livestreams",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Livestream",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livestreams/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams", "active"]
+            },
+            "description": "Obtiene el livestream activo de la organización"
+          }
+        },
+        {
+          "name": "Get Livestream by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livestreams/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Create Livestream",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Live Navidad 2025\",\n  \"platform\": \"instagram\",\n  \"viewerCount\": 0,\n  \"moderatorId\": \"user_id_opcional\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livestreams",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams"]
+            },
+            "description": "Crea un nuevo livestream en estado activo"
+          }
+        },
+        {
+          "name": "Update Livestream",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Live Navidad - Actualizado\",\n  \"viewerCount\": 150\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livestreams/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Close Livestream",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"viewerCount\": 250\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livestreams/:id/close",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams", ":id", "close"]
+            },
+            "description": "Cierra el livestream y calcula métricas finales"
+          }
+        },
+        {
+          "name": "Get Livestream Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livestreams/:id/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["livestreams", ":id", "stats"]
+            },
+            "description": "Obtiene estadísticas del livestream"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Sales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales"]
+            }
+          }
+        },
+        {
+          "name": "Get Sale by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"customer_id_aqui\",\n  \"sellerId\": \"seller_id_aqui\",\n  \"livestreamId\": \"livestream_id_aqui\",\n  \"items\": [\n    {\n      \"productId\": \"product_id\",\n      \"productVariantId\": \"variant_id\",\n      \"quantity\": 2,\n      \"unitPrice\": 15000\n    }\n  ],\n  \"notes\": \"Cliente pidió envío express\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales"]
+            }
+          }
+        },
+        {
+          "name": "Update Sale",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\",\n  \"notes\": \"Actualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Sale",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carts (Carritos Persistentes)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Active Carts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts"]
+            },
+            "description": "Obtiene todos los carritos activos (reserved) con items pendientes de pago"
+          }
+        },
+        {
+          "name": "Get Customer Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/customer/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts", "customer", ":customerId"]
+            },
+            "description": "Obtiene el carrito activo de un cliente específico (un cliente solo puede tener un carrito activo)"
+          }
+        },
+        {
+          "name": "Add LiveItem to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"customer_id_aqui\",\n  \"liveItemId\": \"liveitem_id_aqui\",\n  \"livestreamId\": \"livestream_id_aqui\",\n  \"sellerId\": \"seller_id_aqui\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts", "items"]
+            },
+            "description": "Agrega un LiveItem al carrito del cliente. Si no tiene carrito activo, se crea uno nuevo. El item queda reservado."
+          }
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts", ":cartId", "items", ":itemId"]
+            },
+            "description": "Elimina un item del carrito. El item vuelve a estado available."
+          }
+        },
+        {
+          "name": "Confirm Cart (Payment Received)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethod\": \"transfer\",\n  \"paymentReference\": \"Transf-12345\",\n  \"notes\": \"Transferencia recibida\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/:cartId/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts", ":cartId", "confirm"]
+            },
+            "description": "Confirma el carrito como venta pagada. Todos los items pasan a estado sold. Esto es IRREVERSIBLE."
+          }
+        },
+        {
+          "name": "Cancel Cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/:cartId/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["carts", ":cartId", "cancel"]
+            },
+            "description": "Cancela el carrito. Todos los items vuelven a estado available."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Obtiene todas las categorías"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"]
+            },
+            "description": "Obtiene una categoría por ID con sus atributos"
+          }
+        },
+        {
+          "name": "Get Category Attributes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:categoryId/attributes",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":categoryId", "attributes"]
+            },
+            "description": "Obtiene los atributos de una categoría específica"
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ropa\",\n  \"description\": \"Categoría de ropa y vestuario\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Crea una nueva categoría"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ropa y Accesorios\",\n  \"description\": \"Categoría de ropa, vestuario y accesorios\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"]
+            },
+            "description": "Actualiza una categoría existente"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"]
+            },
+            "description": "Elimina una categoría"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attributes",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Attribute by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", ":id"]
+            },
+            "description": "Obtiene un atributo por ID"
+          }
+        },
+        {
+          "name": "Create Attribute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Color\",\n  \"type\": \"select\",\n  \"isRequired\": true,\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/:categoryId/attributes",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":categoryId", "attributes"]
+            },
+            "description": "Crea un nuevo atributo para una categoría"
+          }
+        },
+        {
+          "name": "Update Attribute",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tipo de Material\",\n  \"required\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attributes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", ":id"]
+            },
+            "description": "Actualiza un atributo existente"
+          }
+        },
+        {
+          "name": "Delete Attribute",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", ":id"]
+            },
+            "description": "Elimina un atributo"
+          }
+        },
+        {
+          "name": "Get Attribute Values",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes/:attributeId/values",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", ":attributeId", "values"]
+            },
+            "description": "Obtiene los valores de un atributo"
+          }
+        },
+        {
+          "name": "Create Attribute Value",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"Rojo\",\n  \"hexCode\": \"#FF0000\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attributes/:attributeId/values",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", ":attributeId", "values"]
+            },
+            "description": "Crea un nuevo valor para un atributo"
+          }
+        },
+        {
+          "name": "Get Attribute Value by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes/values/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", "values", ":id"]
+            },
+            "description": "Obtiene un valor de atributo por ID"
+          }
+        },
+        {
+          "name": "Update Attribute Value",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"Algodón 100%\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attributes/values/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", "values", ":id"]
+            },
+            "description": "Actualiza un valor de atributo existente"
+          }
+        },
+        {
+          "name": "Delete Attribute Value",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes/values/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["attributes", "values", ":id"]
+            },
+            "description": "Elimina un valor de atributo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metrics",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "dashboard"]
+            },
+            "description": "Métricas generales del dashboard"
+          }
+        },
+        {
+          "name": "Sales Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/sales?startDate=2025-01-01&endDate=2025-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "sales"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-12-31"
+                }
+              ]
+            },
+            "description": "Métricas de ventas por período"
+          }
+        },
+        {
+          "name": "Top Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/top-products?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "top-products"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Productos más vendidos"
+          }
+        },
+        {
+          "name": "Top Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/top-customers?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "top-customers"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Clientes top por monto gastado"
+          }
+        },
+        {
+          "name": "Payment Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/payments",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "payments"]
+            },
+            "description": "Métricas de pagos por estado y método"
+          }
+        },
+        {
+          "name": "Livestream Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/livestreams?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "livestreams"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Top livestreams por ventas"
+          }
+        },
+        {
+          "name": "Monthly Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics/monthly?month=2025-12",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics", "monthly"],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "2025-12"
+                }
+              ]
+            },
+            "description": "Métricas mensuales"
+          }
+        }
+      ]
+    }
+  ]
+}
