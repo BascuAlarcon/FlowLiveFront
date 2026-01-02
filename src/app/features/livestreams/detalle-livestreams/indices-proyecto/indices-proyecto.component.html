@@ -1,94 +1,104 @@
-<div>   
-    <!-- % para el Impuesto -->
+<div *ngIf="livestreamData">   
+    <!-- Métricas Secundarias -->
     <div class="card mb-3">
-        <div class="impuesto-row">
-            <label style="color: #808AA8; font-size: 14px;">% para el Impuesto</label>
-            <input type="text" class="form-control impuesto-input" value="0 %" readonly>
-        </div>
-    </div>
-
-    <!-- Valor del Proyecto -->
-    <div class="card mb-3">
-        <div class="valor-proyecto-header">
-            <h5 class="valor-proyecto-titulo">Valor del Proyecto</h5>
-            <img src="../../../../../assets/img/icon-question-mark-gray.svg" alt="">
+        <div style="padding: 1.5em; border-bottom: 1px solid #dee2e6;">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1D2345;">Estado de Ventas</h5>
         </div>
         
-        <div class="valor-row">
-            <label class="label-valor">Valor Neto</label>
-            <span class="valor">$ 0</span>
-        </div>
-        
-        <div class="valor-row">
-            <label class="label-valor">Valor Bruto</label>
-            <span class="valor">$ 0</span>
-        </div>
-        
-        <div class="ganancia-row">
-            <label class="label-valor">% Ganancia</label>
-            <input type="text" class="form-control ganancia-input" value="0 %" readonly>
-        </div>
-        
-        <div class="valor-row">
-            <label class="label-valor">Valor Total Neto</label>
-            <span class="valor">$ 0</span>
-        </div>
-        
-        <div class="valor-row">
-            <label class="label-valor">Valor Total Bruto</label>
-            <span class="valor">$ 0</span>
-        </div>
-        
-        <div class="descuento-row">
-            <label class="label-valor">Descuento</label>
-            <input type="text" class="form-control descuento-input" value="0 %" readonly>
-        </div>
-        
-        <div class="venta-box">
-            <div class="venta-row">
-                <label class="venta-label">Valor Venta Neto</label>
-                <span class="venta-valor">$ 0</span>
+        <div style="padding: 0.75em 1.5em; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f8f9fa;">
+            <div style="display: flex; align-items: center; gap: 0.5em;">
+                <span style="color: #28a745; font-size: 1.25rem;">✓</span>
+                <label style="color: #6C757D; font-size: 0.875rem; margin: 0;">Confirmadas</label>
             </div>
-            <div class="venta-row">
-                <label class="venta-label">Valor Venta Bruto</label>
-                <span class="venta-valor">$ 0</span>
+            <span style="color: #28a745; font-weight: 700; font-size: 1.1rem;">{{ formatNumber(livestreamData.stats.confirmedSales) }}</span>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f8f9fa;">
+            <div style="display: flex; align-items: center; gap: 0.5em;">
+                <span style="color: #ffc107; font-size: 1.25rem;">⏳</span>
+                <label style="color: #6C757D; font-size: 0.875rem; margin: 0;">Pendientes</label>
             </div>
+            <span style="color: #ffc107; font-weight: 700; font-size: 1.1rem;">{{ formatNumber(livestreamData.stats.pendingSales) }}</span>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 0.5em;">
+                <span style="color: #dc3545; font-size: 1.25rem;">✗</span>
+                <label style="color: #6C757D; font-size: 0.875rem; margin: 0;">Canceladas</label>
+            </div>
+            <span style="color: #dc3545; font-weight: 700; font-size: 1.1rem;">{{ formatNumber(livestreamData.stats.cancelledSales) }}</span>
         </div>
     </div>
 
-    <!-- Costos del Proyecto -->
+    <!-- Métricas de Carrito -->
     <div class="card mb-3">
-        <div class="costos-header">
-            <h5 class="costos-titulo">Costos del Proyecto</h5>
-            <img src="../../../../../assets/img/icon-question-mark-gray.svg" alt="">
+        <div style="padding: 1.5em; border-bottom: 1px solid #dee2e6;">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1D2345;">Métricas de Carrito</h5>
         </div>
         
-        <div class="costos-row">
-            <label class="label-costos">Costos Directos</label>
-            <span class="costos">$ 0</span>
+        <div style="padding: 0.75em 1.5em; border-bottom: 1px solid #f8f9fa;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Monto Promedio</label>
+            <span style="color: #1D2345; font-weight: 700; font-size: 1.1rem;">{{ formatCurrency(livestreamData.stats.averageCartAmount) }}</span>
         </div>
         
-        <div class="costos-row">
-            <label class="label-costos">Costos Indirectos</label>
-            <span class="costos">$ 0</span>
+        <div style="padding: 0.75em 1.5em;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Productos por Carrito</label>
+            <span style="color: #1D2345; font-weight: 700; font-size: 1.1rem;">{{ formatDecimal(livestreamData.stats.averageProductsPerCart) }}</span>
         </div>
     </div>
 
-    <!-- Margen del Proyecto -->
+    <!-- Métricas de Cliente -->
     <div class="card mb-3">
-        <div class="margen-header">
-            <h5 class="margen-titulo">Margen del Proyecto</h5>
-            <img src="../../../../../assets/img/icon-question-mark-gray.svg" alt="">
+        <div style="padding: 1.5em; border-bottom: 1px solid #dee2e6;">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1D2345;">Métricas de Cliente</h5>
         </div>
         
-        <div class="margen-row">
-            <label class="label-margen">Margen Presupuestado</label>
-            <span class="margen">$ 0</span>
+        <div style="padding: 0.75em 1.5em; border-bottom: 1px solid #f8f9fa;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Total Clientes</label>
+            <span style="color: #667eea; font-weight: 700; font-size: 1.1rem;">{{ formatNumber(livestreamData.stats.totalCustomers) }}</span>
         </div>
         
-        <div class="margen-row">
-            <label class="label-margen">% Margen Presupuestado</label>
-            <span class="margen">0 %</span>
+        <div style="padding: 0.75em 1.5em;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Productos por Cliente</label>
+            <span style="color: #1D2345; font-weight: 700; font-size: 1.1rem;">{{ formatDecimal(livestreamData.stats.averageProductsPerCustomer) }}</span>
         </div>
     </div>
+
+    <!-- Resumen Financiero -->
+    <div class="card mb-3">
+        <div style="padding: 1.5em; border-bottom: 1px solid #dee2e6;">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1D2345;">Resumen Financiero</h5>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em; border-bottom: 1px solid #f8f9fa;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Monto Estimado</label>
+            <span style="color: #6C757D; font-weight: 600; font-size: 1rem;">{{ formatCurrency(livestreamData.stats.totalEstimatedAmount) }}</span>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em; border-bottom: 1px solid #f8f9fa;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Monto Cerrado</label>
+            <span style="color: #28a745; font-weight: 700; font-size: 1rem;">{{ formatCurrency(livestreamData.stats.totalClosedAmount) }}</span>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em; background-color: #f8f9fa;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Revenue Total</label>
+            <span style="color: #667eea; font-weight: 700; font-size: 1.25rem;">{{ formatCurrency(livestreamData.stats.totalRevenue) }}</span>
+        </div>
+    </div>
+
+    <!-- Unidades -->
+    <div class="card mb-3">
+        <div style="padding: 1.5em; border-bottom: 1px solid #dee2e6;">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1D2345;">Unidades</h5>
+        </div>
+        
+        <div style="padding: 0.75em 1.5em;">
+            <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Total Unidades Vendidas</label>
+            <span style="color: #1D2345; font-weight: 700; font-size: 1.1rem;">{{ formatNumber(livestreamData.stats.totalUnitsSold) }}</span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!livestreamData" style="text-align: center; padding: 2em; color: #6C757D;">
+    <p style="font-size: 0.875rem;">Cargando métricas...</p>
 </div>

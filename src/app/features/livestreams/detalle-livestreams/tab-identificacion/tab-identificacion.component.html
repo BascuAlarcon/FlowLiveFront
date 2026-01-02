@@ -1,135 +1,116 @@
-<!-- Card 1: Datos Generales del Proyecto -->
-<div class="card">
+<!-- Header del Livestream -->
+<div class="card" *ngIf="livestreamData">
   <div class="card-body">
-    <h2 class="card-title">Datos Generales del Proyecto</h2>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5em;">
+      <div style="flex: 1;">
+        <h2 class="card-title" style="margin-bottom: 0.5em;">{{ livestreamData.livestream.title }}</h2>
+        <div style="display: flex; gap: 1em; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: 1.5rem;">{{ getPlatformIcon(livestreamData.livestream.platform) }}</span>
+          <span style="color: #6C757D;">{{ livestreamData.livestream.platform | titlecase }}</span>
+          <span *ngIf="livestreamData.livestream.isActive" 
+                style="background-color: #28a745; color: white; padding: 0.25em 0.75em; border-radius: 12px; font-size: 0.875rem; font-weight: 600;">
+            🔴 En Vivo
+          </span>
+          <span *ngIf="!livestreamData.livestream.isActive" 
+                style="background-color: #6c757d; color: white; padding: 0.25em 0.75em; border-radius: 12px; font-size: 0.875rem; font-weight: 600;">
+            Finalizado
+          </span>
+        </div>
+      </div>
+    </div>
     
-    <div class="row">
-      <div class="col-md-12">
-        <label class="form-label">Área: <span class="text-muted">Consultora</span></label>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1em; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">
+      <div>
+        <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Duración</label>
+        <span style="color: #1D2345; font-weight: 600;">{{ formatDuration(livestreamData.stats.durationMinutes) }}</span>
       </div>
-    </div>
-
-    <div class="row mb-2">
-      <div class="col-md-12">
-        <label class="form-label">Nombre del Proyecto <span class="text-dark">*</span></label>
-        <input type="text" class="form-control" placeholder="Ingrese Nombre del Proyecto">
+      <div>
+        <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Fecha de Inicio</label>
+        <span style="color: #1D2345; font-weight: 600;">{{ formatDate(livestreamData.livestream.startedAt) }}</span>
       </div>
-    </div>
-
-    <div class="row mb-2">
-      <div class="col-md-6">
-        <label class="form-label">Tipo de Financiamiento <span class="text-dark">*</span></label>
-        <select class="form-select">
-          <option selected>Seleccione Tipo</option>
-        </select>
+      <div>
+        <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Espectadores</label>
+        <span style="color: #1D2345; font-weight: 600;">{{ formatNumber(livestreamData.livestream.viewerCount) }}</span>
       </div>
-      <div class="col-md-6">
-        <label class="form-label">Responsable Proceso <span class="text-dark">*</span></label>
-        <input type="text" class="form-control" placeholder="Ingrese Responsable">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <label class="form-label">Tipo de Venta</label>
-        <select class="form-select">
-          <option selected>Seleccione Tipo</option>
-        </select>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Ejecutivo Venta Cruzada</label>
-        <input type="text" class="form-control" placeholder="Ejecutivo Venta Cruzada" disabled>
+      <div *ngIf="livestreamData.livestream.endedAt">
+        <label style="color: #6C757D; font-size: 0.875rem; display: block; margin-bottom: 0.25em;">Fecha de Fin</label>
+        <span style="color: #1D2345; font-weight: 600;">{{ formatDate(livestreamData.livestream.endedAt) }}</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Card 2: Detalles del Servicio -->
-<div class="card ">
+<!-- Grid de Métricas Principales -->
+<div class="card" *ngIf="livestreamData">
   <div class="card-body">
-    <h2 class="card-title ">Detalles del Servicio</h2>
+    <h2 class="card-title">Métricas Principales</h2>
     
-    <div class="row mb-2">
-      <div class="col-md-8">
-        <label class="form-label">Tipo de Servicio <span class="text-dark">*</span></label>
-        <select class="form-select">
-          <option selected>Seleccione Tipo</option>
-        </select>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; margin-top: 1em;">
+      <!-- Monto Total Vendido -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Monto Total Vendido</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatCurrency(livestreamData.stats.totalRevenue) }}</div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <label class="form-label">Objetivo del Servicio <span class="text-dark">*</span></label>
-        <input type="text" class="form-control" placeholder="Ingrese Objetivo del Servicio">
+      
+      <!-- Ventas Totales -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Ventas Totales</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatNumber(livestreamData.stats.totalSales) }}</div>
+      </div>
+      
+      <!-- Clientes Únicos -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Clientes Únicos</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatNumber(livestreamData.stats.totalCustomers) }}</div>
+      </div>
+      
+      <!-- Productos Vendidos -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Productos Vendidos</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatNumber(livestreamData.stats.totalProductsSold) }}</div>
+      </div>
+      
+      <!-- Ticket Promedio -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Ticket Promedio</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatCurrency(livestreamData.stats.averageTicket) }}</div>
+      </div>
+      
+      <!-- Tasa de Conversión -->
+      <div style="padding: 1.5em; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); border-radius: 12px; color: white;">
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5em;">Tasa de Conversión</div>
+        <div style="font-size: 1.75rem; font-weight: 700;">{{ formatPercentage(livestreamData.stats.closureRate) }}</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Card 3: Fechas del Proyecto -->
-<div class="card ">
+<!-- Barra de Progreso: Monto Vendido vs Estimado -->
+<div class="card" *ngIf="livestreamData">
   <div class="card-body">
-    <h2 class="card-title ">Fechas del Proyecto</h2>
+    <h2 class="card-title">Progreso de Ventas</h2>
     
-    <div class="row">
-      <div class="col-md-4">
-        <label class="form-label">Fecha de creación</label> 
-        <input type="date" class="form-control" placeholder="Seleccione año">
+    <div style="margin-top: 1em;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5em;">
+        <span style="color: #1D2345; font-weight: 600;">
+          {{ formatCurrency(livestreamData.stats.totalClosedAmount) }} de {{ formatCurrency(livestreamData.stats.totalEstimatedAmount) }} vendido
+        </span>
+        <span style="color: #667eea; font-weight: 700;">
+          {{ formatPercentage((livestreamData.stats.totalClosedAmount / livestreamData.stats.totalEstimatedAmount) * 100) }}
+        </span>
       </div>
-      <div class="col-md-4">
-        <label class="form-label">Fecha inicio <span class="text-dark">*</span></label>
-        <input type="date" class="form-control" placeholder="Seleccione año">
+      
+      <div style="width: 100%; background-color: #e9ecef; border-radius: 10px; height: 30px; overflow: hidden;">
+        <div [style.width.%]="(livestreamData.stats.totalClosedAmount / livestreamData.stats.totalEstimatedAmount) * 100"
+             style="height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease;">
+        </div>
       </div>
-      <div class="col-md-4">
-        <label class="form-label">Fecha Término <span class="text-dark">*</span></label>
-        <input type="date" class="form-control" placeholder="Seleccione año">
+      
+      <div style="margin-top: 0.5em; color: #6C757D; font-size: 0.875rem;">
+        Inventario restante: {{ formatCurrency(livestreamData.stats.totalEstimatedAmount - livestreamData.stats.totalClosedAmount) }}
       </div>
     </div>
   </div>
 </div>
 
-<!-- Card 4: Contraparte Empresa -->
-<div class="card ">
-  <div class="card-body">
-    <h2 class="card-title ">Contraparte Empresa</h2>
-    
-    <div class="row mb-2">
-      <div class="col-md-8">
-        <label class="form-label">Nombre y Apellidos <span class="text-dark">*</span></label>
-        <input type="text" class="form-control" placeholder="Ingrese Nombre y Apellidos">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Cargo</label>
-        <input type="text" class="form-control" placeholder="Ingrese Cargo">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-4">
-        <label class="form-label">Email <span class="text-dark">*</span></label>
-        <input type="email" class="form-control" placeholder="Ingrese Email">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Teléfono</label>
-        <input type="tel" class="form-control" placeholder="Ingrese Teléfono">
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Card 5: Antecedentes -->
-<div class="card ">
-  <div class="card-body">
-    <h2 class="card-title ">Antecedentes</h2>
-    
-    <div class="row">
-      <div class="col-md-12">
-        <button type="button" class="btn btn-outline-secondary">
-          <i class="feather icon-upload"></i> Subir documento
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 

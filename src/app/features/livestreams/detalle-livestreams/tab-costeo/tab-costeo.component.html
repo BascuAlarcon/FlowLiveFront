@@ -1,327 +1,138 @@
-
-<!-- Costo del Equipo Basal -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-1 card-title">Costo del Equipo Basal</h2>
-            <p class="text-muted mb-3" style="font-size: 16px;">Agregue el equipo base para el proyecto</p>
-        </div>
-        <button class="btn btn-primary">Agregar nuevo Rol</button>
-    </div>
+<!-- Tabla: Productos Más Vendidos -->
+<div class="card mb-4" *ngIf="livestreamData">
     <div class="card-body">
-        <table class="table" style="table-layout: fixed;">
-                <thead class="table-light">
+        <h2 class="card-title mb-3">Productos Más Vendidos</h2>
+        
+        <div *ngIf="livestreamData.topProducts.length === 0" style="text-align: center; padding: 2em; color: #6C757D;">
+            No hay productos vendidos aún.
+        </div>
+        
+        <div *ngIf="livestreamData.topProducts.length > 0" style="overflow-x: auto;">
+            <table class="table" style="min-width: 700px;">
+                <thead style="background-color: #f8f9fa;">
                     <tr>
-                        <th style="background-color: #d6e4f9; width: 15%;">Equipo</th>
-                        <th style="background-color: #d6e4f9; width: 20%;">Rol</th>
-                        <th style="background-color: #d6e4f9; width: 20%;">Responsable</th>
-                        <th style="background-color: #d6e4f9; width: 10%;">Horas</th>
-                        <th style="background-color: #d6e4f9; width: 10%;">Sub Total</th>
-                        <th style="background-color: #d6e4f9; width: 15%;">Tipo Costo</th>
-                        <th style="text-align: center; background-color: #d6e4f9; width: 5%;"></th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; width: 100px;">Imagen</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6;">Categoría</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: right;">Precio</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: center;">Cantidad</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: right;">Revenue Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <select class="form-select">
-                                <option>Seleccione</option>
-                            </select>
+                    <tr *ngFor="let product of livestreamData.topProducts.slice(0, 10); let i = index">
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6;">
+                            <img *ngIf="product.imageUrl" 
+                                 [src]="product.imageUrl" 
+                                 alt="{{product.categoryName}}"
+                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                            <div *ngIf="!product.imageUrl" 
+                                 style="width: 60px; height: 60px; background-color: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                📦
+                            </div>
                         </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Seleccione Rol</option>
-                            </select>
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6;">
+                            <div style="font-weight: 600; color: #1D2345;">{{product.categoryName}}</div>
                         </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Seleccione</option>
-                            </select>
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: right;">
+                            {{formatCurrency(product.price)}}
                         </td>
-                        <td>
-                            <input type="text" class="form-control" value="00:00">
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: center;">
+                            <span style="background-color: #667eea; color: white; padding: 0.25em 0.75em; border-radius: 12px; font-weight: 600;">
+                                {{formatNumber(product.quantity)}}
+                            </span>
                         </td>
-                        <td>
-                            <span>$ 0</span>
-                        </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Tipo Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-link text-danger p-0">
-                                <img src="../../../../../assets/img/icon-basurero-black.svg">
-                            </button>
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: right;">
+                            <span style="font-weight: 700; color: #28a745;">{{formatCurrency(product.totalRevenue)}}</span>
                         </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr class="">
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>Total Neto</strong></td>
-                        <td style="background-color: #d6e4f9;"> <strong>00:00</strong></td>
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>Total Bruto</strong></td>
-                        <td style="background-color: #cfcae5;"><strong>00:00</strong></td>
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                </tfoot>
-        </table>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- Equipo Extra -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-1 card-title">Equipo Extra</h2>
-            <p class="text-muted mb-3">Agregue los roles que contratará para el proyecto.</p>
-        </div>
-        <button class="btn btn-primary">Agregar nuevo Rol</button>
-    </div>
+<!-- Tabla: Clientes que Más Compraron -->
+<div class="card mb-4" *ngIf="livestreamData">
     <div class="card-body">
-        <table class="table" style="table-layout: fixed;">
-                <thead class="table-light">
+        <h2 class="card-title mb-3">Clientes que Más Compraron</h2>
+        
+        <div *ngIf="livestreamData.topCustomers.length === 0" style="text-align: center; padding: 2em; color: #6C757D;">
+            No hay clientes registrados aún.
+        </div>
+        
+        <div *ngIf="livestreamData.topCustomers.length > 0" style="overflow-x: auto;">
+            <table class="table" style="min-width: 700px;">
+                <thead style="background-color: #f8f9fa;">
                     <tr>
-                        <th style="background-color: #d6e4f9; width: 25%;">Rol</th>
-                        <th style="background-color: #d6e4f9; width: 25%;">Responsable</th>
-                        <th style="background-color: #d6e4f9; width: 12%;">Horas</th>
-                        <th style="background-color: #d6e4f9; width: 13%;">Sub Total</th>
-                        <th style="background-color: #d6e4f9; width: 20%;">Tipo Costo</th>
-                        <th style="text-align: center; background-color: #d6e4f9; width: 5%;"></th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; width: 40px;">#</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6;">Cliente</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: center;">Total Compras</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: center;">Productos</th>
+                        <th style="padding: 1em; border-bottom: 2px solid #dee2e6; text-align: right;">Total Gastado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese Rol">
+                    <tr *ngFor="let customer of livestreamData.topCustomers.slice(0, 10); let i = index">
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6;">
+                            <div style="width: 30px; height: 30px; background-color: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                                {{i + 1}}
+                            </div>
                         </td>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese">
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6;">
+                            <div style="font-weight: 600; color: #1D2345;">{{customer.customerName}}</div>
                         </td>
-                        <td>
-                            <input type="text" class="form-control" value="00:00">
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: center;">
+                            {{formatNumber(customer.totalPurchases)}}
                         </td>
-                        <td>
-                            <span>$ 0</span>
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: center;">
+                            {{formatNumber(customer.productsCount)}}
                         </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Tipo Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-link text-danger p-0">
-                                <img src="../../../../../assets/img/icon-basurero-black.svg">
-                            </button>
+                        <td style="padding: 1em; border-bottom: 1px solid #dee2e6; text-align: right;">
+                            <span style="font-weight: 700; color: #28a745;">{{formatCurrency(customer.totalSpent)}}</span>
                         </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr class="">
-                        <td style="background-color: #d6e4f9;" colspan="2"><strong>Total Neto</strong></td>
-                        <td style="background-color: #d6e4f9;"><strong>00:00</strong></td>
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <td style="background-color: #cfcae5;" colspan="2"><strong>Total Bruto</strong></td>
-                        <td style="background-color: #cfcae5;"><strong>00:00</strong></td>
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                </tfoot>
-        </table>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- Honorarios -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-1 card-title">Honorarios</h2>
-            <p class="text-muted mb-3">Agregue los roles que contratará a honorarios.</p>
-        </div>
-        <button class="btn btn-primary">Agregar nuevo Rol</button>
-    </div>
+<!-- Gráficos por Atributo -->
+<div class="card mb-4" *ngIf="livestreamData && getAttributeKeys().length > 0">
     <div class="card-body">
-        <table class="table" style="table-layout: fixed;">
-                <thead class="table-light">
-                    <tr>
-                        <th style="background-color: #d6e4f9; width: 25%;">Rol</th>
-                        <th style="background-color: #d6e4f9; width: 25%;">Responsable</th>
-                        <th style="background-color: #d6e4f9; width: 12%;">Horas</th>
-                        <th style="background-color: #d6e4f9; width: 13%;">Sub Total</th>
-                        <th style="background-color: #d6e4f9; width: 20%;">Tipo Costo</th>
-                        <th style="text-align: center; background-color: #d6e4f9; width: 5%;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese Rol">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" value="00:00">
-                        </td>
-                        <td>
-                            <span>$ 0</span>
-                        </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Tipo Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-link text-danger p-0">
-                                <img src="../../../../../assets/img/icon-basurero-black.svg">
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr class="">
-                        <td style="background-color: #d6e4f9;" colspan="2"><strong>Total Neto</strong></td>
-                        <td style="background-color: #d6e4f9;"><strong>00:00</strong></td>
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <td style="background-color: #cfcae5;" colspan="2"><strong>Total Bruto</strong></td>
-                        <td style="background-color: #cfcae5;"><strong>00:00</strong></td>
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                </tfoot>
-        </table>
+        <h2 class="card-title mb-3">Distribución por Atributos</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2em;">
+            <div *ngFor="let attributeName of getAttributeKeys()" style="padding: 1.5em; border: 1px solid #dee2e6; border-radius: 12px;">
+                <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1em; color: #1D2345; text-align: center;">
+                    {{attributeName}}
+                </h3>
+                
+                <!-- Lista de valores con barras -->
+                <div *ngFor="let item of getAttributeValues(attributeName); let i = index" style="margin-bottom: 1em;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25em;">
+                        <span style="font-size: 0.875rem; color: #6C757D;">{{item.value}}</span>
+                        <span style="font-size: 0.875rem; font-weight: 600; color: #1D2345;">{{item.percentage.toFixed(1)}}%</span>
+                    </div>
+                    
+                    <!-- Barra de progreso -->
+                    <div style="width: 100%; background-color: #e9ecef; border-radius: 10px; height: 20px; overflow: hidden; position: relative;">
+                        <div [style.width.%]="item.percentage"
+                             [style.background-color]="getColorForIndex(i)"
+                             style="height: 100%; transition: width 0.3s ease;">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.25em;">
+                        <span style="font-size: 0.75rem; color: #6C757D;">Cantidad: {{formatNumber(item.count)}}</span>
+                        <span style="font-size: 0.75rem; color: #6C757D;">Revenue: {{formatCurrency(item.revenue)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Equipo OTIC -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-1 card-title">Equipo OTIC</h2>
-            <p class="text-muted mb-3">Agregue los roles que utilizará del equipo OTIC.</p>
-        </div>
-        <button class="btn btn-primary">Agregar nuevo Rol</button>
-    </div>
-    <div class="card-body">
-        <table class="table" style="table-layout: fixed;">
-                <thead class="table-light">
-                    <tr>
-                        <th style="background-color: #d6e4f9; width: 25%;">Rol</th>
-                        <th style="background-color: #d6e4f9; width: 25%;">Responsable</th>
-                        <th style="background-color: #d6e4f9; width: 12%;">Horas</th>
-                        <th style="background-color: #d6e4f9; width: 13%;">Sub Total</th>
-                        <th style="background-color: #d6e4f9; width: 20%;">Tipo Costo</th>
-                        <th style="text-align: center; background-color: #d6e4f9; width: 5%;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese Rol">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" placeholder="Ingrese">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" value="00:00">
-                        </td>
-                        <td>
-                            <span>$ 0</span>
-                        </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Tipo Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-link text-danger p-0">
-                                <img src="../../../../../assets/img/icon-basurero-black.svg">
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr class="">
-                        <td style="background-color: #d6e4f9;" colspan="2"><strong>Total Neto</strong></td>
-                        <td style="background-color: #d6e4f9;"><strong>00:00</strong></td>
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <td style="background-color: #cfcae5;" colspan="2"><strong>Total Bruto</strong></td>
-                        <td style="background-color: #cfcae5;"><strong>00:00</strong></td>
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                </tfoot>
-        </table>
-    </div>
-</div>
-
-<!-- Costos Operacionales -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-1 card-title">Costos Operacionales</h2>
-            <p class="text-muted mb-3">Agregue los Costos Operaciones del proyecto (Traslados, Viáticos, Arriendos, etc)</p>
-        </div>
-        <button class="btn btn-primary">Agregar nuevo costo</button>
-    </div>
-    <div class="card-body">
-        <table class="table" style="table-layout: fixed;">
-            <thead class="table-light">
-                    <tr>
-                        <th style="background-color: #d6e4f9; width: 25%;">Tipo</th>
-                        <th style="background-color: #d6e4f9; width: 12%;">Cantidad</th>
-                        <th style="background-color: #d6e4f9; width: 18%;">Valor Unitario</th>
-                        <th style="background-color: #d6e4f9; width: 15%;">Sub Total</th>
-                        <th style="background-color: #d6e4f9; width: 25%;">Tipo Costo</th>
-                        <th style="text-align: center; background-color: #d6e4f9; width: 5%;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <select class="form-select">
-                                <option>Seleccione Tipo de Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" class="form-control" value="0">
-                        </td>
-                        <td>
-                            <span>$ 0</span>
-                        </td>
-                        <td>
-                            <span>$ 0</span>
-                        </td>
-                        <td>
-                            <select class="form-select">
-                                <option>Tipo Costo</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-link text-danger p-0">
-                                <img src="../../../../../assets/img/icon-basurero-black.svg">
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr class="">
-                        <td style="background-color: #d6e4f9;" colspan="2"><strong>Total Neto</strong></td>
-                        <td style="background-color: #d6e4f9;"><strong>00:00</strong></td>
-                        <td style="background-color: #d6e4f9;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <td style="background-color: #cfcae5;" colspan="2"><strong>Total Bruto</strong></td>
-                        <td style="background-color: #cfcae5;"><strong>00:00</strong></td>
-                        <td style="background-color: #cfcae5;" colspan="3"><strong>$ 0</strong></td>
-                    </tr>
-                </tfoot>
-        </table>
-    </div>
+<div *ngIf="!livestreamData" style="text-align: center; padding: 3em; color: #6C757D;">
+    Cargando información de productos y clientes...
 </div>

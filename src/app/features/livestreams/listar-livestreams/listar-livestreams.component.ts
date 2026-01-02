@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 import { HasRoleDirective } from '@shared/directives/has-role.directive';
 
 interface DataSource {
-  id: number;
+  id: string;
   numero?: number;
   nombreProyecto?: string;
   tipoProceso?: string;
@@ -166,6 +166,7 @@ export class ListarLivestreamsComponent {
 
   cargarLivestreams(livestreams: Livestream[]) {
     this.dataSource.data = livestreams.map((livestream, index) => {
+      console.log(livestream);
       const stats = livestream.stats;
       const isActive = stats?.isActive ?? !livestream.endedAt;
       const totalRevenue = stats?.totalRevenue || livestream.totalSalesAmount || 0;
@@ -173,7 +174,7 @@ export class ListarLivestreamsComponent {
       const pendingRevenue = totalRevenue - confirmedRevenue;
       
       return {
-        id: index + 1,
+        id: livestream.id,
         numero: index + 1,
         nombreProyecto: livestream.title,
         tipoProceso: 'Livestream',
@@ -233,210 +234,7 @@ export class ListarLivestreamsComponent {
       { emprCodigo: 5, empNombre: 'Corporación Minera' },
       { emprCodigo: 6, empNombre: 'Retail Express SA' }
     ];
-
-    // Datos de proyectos mock
-    this.dataSource.data = [
-      {
-        id: 1,
-        numero: 1,
-        tipoProceso: 'Selección Regular',
-        nombreEmpresa: 'OTIC SOFOFA',
-        cargo: 'Gerente de Proyectos',
-        solicitante: 'Juan Pérez',
-        estado: 'En Progreso',
-        fechaSolicitud: '01/01/2024',
-        responsable: 'María González',
-        urgencia: 'Alta',
-        nombreProyecto: 'Implementación ERP',
-        tipoServicio: 'Implementación',
-        fechaInicio: '01/01/2024',
-        fechaFin: '30/06/2024',
-        montoTotal: 45000000,
-        facturado: 30000000,
-        porFacturar: 15000000,
-        expanded: false,
-        tipoVenta: 'Directa',
-        tipoFinanciamiento: 'Sence',
-        contrato: 'Contrato Marco 2024',
-        margen: 35,
-        fechaTerminoPropuesta: '15/12/2023'
-      },
-      {
-        id: 2,
-        numero: 2,
-        tipoProceso: 'Selección Express',
-        nombreEmpresa: 'Nexia Chile',
-        cargo: 'Analista Financiero',
-        solicitante: 'Ana Torres',
-        estado: 'Finalizado',
-        fechaSolicitud: '15/02/2024',
-        responsable: 'Carlos Pérez',
-        urgencia: 'Media',
-        nombreProyecto: 'Consultoría Financiera',
-        tipoServicio: 'Consultoría',
-        fechaInicio: '15/02/2024',
-        fechaFin: '15/08/2024',
-        montoTotal: 25000000,
-        facturado: 25000000,
-        porFacturar: 0,
-        expanded: false,
-        tipoVenta: 'Por Licitación',
-        tipoFinanciamiento: 'Propio',
-        contrato: 'Contrato Específico 2024-02',
-        margen: 42,
-        fechaTerminoPropuesta: '30/01/2024'
-      },
-      {
-        id: 3,
-        numero: 3,
-        tipoProceso: 'Selección Regular',
-        nombreEmpresa: 'Tech Solutions SpA',
-        cargo: 'Desarrollador Full Stack',
-        solicitante: 'Pedro Gómez',
-        estado: 'En Progreso',
-        fechaSolicitud: '10/03/2024',
-        responsable: 'Ana Martínez',
-        urgencia: 'Alta',
-        nombreProyecto: 'Desarrollo Portal Web',
-        tipoServicio: 'Desarrollo',
-        fechaInicio: '10/03/2024',
-        fechaFin: '10/09/2024',
-        montoTotal: 32000000,
-        facturado: 16000000,
-        porFacturar: 16000000,
-        expanded: false,
-        tipoVenta: 'Directa',
-        tipoFinanciamiento: 'Franquicia Tributaria',
-        contrato: 'Orden de Compra 15234',
-        margen: 38,
-        fechaTerminoPropuesta: '25/02/2024'
-      },
-      {
-        id: 4,
-        numero: 4,
-        tipoProceso: 'Selección Regular',
-        nombreEmpresa: 'Innovación y Desarrollo SA',
-        cargo: 'Ingeniero de Soporte',
-        solicitante: 'Laura Díaz',
-        estado: 'Activo',
-        fechaSolicitud: '01/01/2024',
-        responsable: 'Rolando García',
-        urgencia: 'Baja',
-        nombreProyecto: 'Soporte Técnico Anual',
-        tipoServicio: 'Soporte',
-        fechaInicio: '01/01/2024',
-        fechaFin: '31/12/2024',
-        montoTotal: 18000000,
-        facturado: 12000000,
-        porFacturar: 6000000,
-        expanded: false,
-        tipoVenta: 'Renovación',
-        tipoFinanciamiento: 'Propio',
-        contrato: 'Contrato Anual 2024',
-        margen: 45,
-        fechaTerminoPropuesta: '15/11/2023'
-      },
-      {
-        id: 5,
-        numero: 5,
-        tipoProceso: 'Selección Express',
-        nombreEmpresa: 'Corporación Minera',
-        cargo: 'Auditor Senior',
-        solicitante: 'Roberto Campos',
-        estado: 'Finalizado',
-        fechaSolicitud: '05/04/2024',
-        responsable: 'Patricia Silva',
-        urgencia: 'Media',
-        nombreProyecto: 'Auditoría Procesos',
-        tipoServicio: 'Consultoría',
-        fechaInicio: '05/04/2024',
-        fechaFin: '05/07/2024',
-        montoTotal: 28000000,
-        facturado: 28000000,
-        porFacturar: 0,
-        expanded: false,
-        tipoVenta: 'Por Licitación',
-        tipoFinanciamiento: 'Sence',
-        contrato: 'Licitación Pública 2024-03',
-        margen: 40,
-        fechaTerminoPropuesta: '20/03/2024'
-      },
-      {
-        id: 6,
-        numero: 6,
-        tipoProceso: 'Selección Regular',
-        nombreEmpresa: 'Retail Express SA',
-        cargo: 'Consultor CRM',
-        solicitante: 'Claudia Reyes',
-        estado: 'En Progreso',
-        fechaSolicitud: '20/05/2024',
-        responsable: 'Luis Rojas',
-        urgencia: 'Alta',
-        nombreProyecto: 'Implementación CRM',
-        tipoServicio: 'Implementación',
-        fechaInicio: '20/05/2024',
-        fechaFin: '20/11/2024',
-        montoTotal: 52000000,
-        facturado: 20000000,
-        porFacturar: 32000000,
-        expanded: false,
-        tipoVenta: 'Directa',
-        tipoFinanciamiento: 'Mixto',
-        contrato: 'Contrato Servicio 2024-05',
-        margen: 33,
-        fechaTerminoPropuesta: '10/05/2024'
-      },
-      {
-        id: 7,
-        numero: 7,
-        tipoProceso: 'Selección Regular',
-        nombreEmpresa: 'OTIC SOFOFA',
-        cargo: 'Especialista Cloud',
-        solicitante: 'Fernando Ruiz',
-        estado: 'En Progreso',
-        fechaSolicitud: '01/06/2024',
-        responsable: 'María González',
-        urgencia: 'Media',
-        nombreProyecto: 'Migración Cloud',
-        tipoServicio: 'Implementación',
-        fechaInicio: '01/06/2024',
-        fechaFin: '01/12/2024',
-        montoTotal: 38000000,
-        facturado: 15000000,
-        porFacturar: 23000000,
-        expanded: false,
-        tipoVenta: 'Directa',
-        tipoFinanciamiento: 'Sence',
-        contrato: 'Contrato Adicional 2024-06',
-        margen: 37,
-        fechaTerminoPropuesta: '15/05/2024'
-      },
-      {
-        id: 8,
-        numero: 8,
-        tipoProceso: 'Selección Express',
-        nombreEmpresa: 'Tech Solutions SpA',
-        cargo: 'Instructor Técnico',
-        solicitante: 'Mónica Vargas',
-        estado: 'Finalizado',
-        fechaSolicitud: '10/07/2024',
-        responsable: 'Jorge Morales',
-        urgencia: 'Baja',
-        nombreProyecto: 'Capacitación Personal',
-        tipoServicio: 'Consultoría',
-        fechaInicio: '10/07/2024',
-        fechaFin: '10/08/2024',
-        montoTotal: 8000000,
-        facturado: 8000000,
-        porFacturar: 0,
-        expanded: false,
-        tipoVenta: 'Directa',
-        tipoFinanciamiento: 'Franquicia Tributaria',
-        contrato: 'Orden de Servicio 8821',
-        margen: 48,
-        fechaTerminoPropuesta: '25/06/2024'
-      }
-    ];
+ 
   }
 
   toggleExpand(proyecto: DataSource) {
@@ -457,8 +255,7 @@ export class ListarLivestreamsComponent {
     this._router.navigate(['/potenciales-proyectos/crear'], { queryParams: { proceso: id } });
   }
 
-  navegarDetalleProceso(id: number) {
-    console.log(`Navegar al detalle del proceso con ID: ${id}`);
+  navegarDetalleProceso(id: any) { 
     this._router.navigate([`/livestreams/detalle`, id]);
   }
 

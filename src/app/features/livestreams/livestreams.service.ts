@@ -30,6 +30,60 @@ export interface LivestreamStats {
   conversionRate: number;
 }
 
+export interface LivestreamDetailedStats {
+  livestream: {
+    id: string;
+    title: string;
+    platform: 'instagram' | 'tiktok' | 'youtube' | 'other';
+    viewerCount: number;
+    startedAt: string;
+    endedAt: string | null;
+    isActive: boolean;
+  };
+  stats: {
+    totalSales: number;
+    confirmedSales: number;
+    pendingSales: number;
+    cancelledSales: number;
+    totalRevenue: number;
+    totalUnitsSold: number;
+    averageTicket: number;
+    durationMinutes: number;
+    isActive: boolean;
+    totalEstimatedAmount: number;
+    totalClosedAmount: number;
+    averageCartAmount: number;
+    averageProductsPerCart: number;
+    closureRate: number;
+    totalCustomers: number;
+    totalProductsSold: number;
+    averageProductsPerCustomer: number;
+  };
+  topProducts: Array<{
+    liveItemId: string;
+    categoryName: string;
+    price: number;
+    quantity: number;
+    totalRevenue: number;
+    imageUrl: string | null;
+  }>;
+  topCustomers: Array<{
+    customerId: string;
+    customerName: string;
+    totalPurchases: number;
+    totalSpent: number;
+    productsCount: number;
+  }>;
+  attributesWithPercentages: {
+    [attributeName: string]: Array<{
+      value: string;
+      count: number;
+      revenue: number;
+      percentage: number;
+    }>;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -85,6 +139,13 @@ export class LivestreamsService {
    */
   getStats(id: string): Observable<LivestreamStats> {
     return this.http.get<LivestreamStats>(`${this.apiUrl}/${id}/stats`);
+  }
+
+  /**
+   * Obtener estadísticas detalladas de un livestream
+   */
+  getDetailedStats(id: string): Observable<{success: boolean; data: LivestreamDetailedStats}> {
+    return this.http.get<{success: boolean; data: LivestreamDetailedStats}>(`${this.apiUrl}/${id}/stats`);
   }
 
   // Métodos legacy para compatibilidad
